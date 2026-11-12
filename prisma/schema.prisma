@@ -1,0 +1,478 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            Int           @id @default(autoincrement())
+  email         String        @unique @db.VarChar(191)
+  passwordHash  String        @map("password_hash") @db.VarChar(255)
+  fullName      String        @map("full_name") @db.VarChar(191)
+  phone         String?       @db.VarChar(50)
+  avatar        String?       @db.VarChar(255)
+  roleId        Int           @default(1) @map("role_id")
+  role          Role          @relation(fields: [roleId], references: [id])
+  isActive      Boolean       @default(true) @map("is_active")
+  createdAt     DateTime      @default(now()) @map("created_at")
+  updatedAt     DateTime      @updatedAt @map("updated_at")
+  activityLogs  ActivityLog[]
+
+  @@map("users")
+}
+
+model Role {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique @db.VarChar(100)
+  slug        String       @unique @db.VarChar(100)
+  description String?      @db.Text
+  createdAt   DateTime     @default(now()) @map("created_at")
+  updatedAt   DateTime     @updatedAt @map("updated_at")
+  users       User[]
+  permissions Permission[]
+
+  @@map("roles")
+}
+
+model Permission {
+  id          Int      @id @default(autoincrement())
+  name        String   @db.VarChar(100)
+  slug        String   @unique @db.VarChar(100)
+  description String?  @db.Text
+  module      String   @db.VarChar(100)
+  roles       Role[]
+
+  @@map("permissions")
+}
+
+model WebsiteSetting {
+  id                   Int      @id @default(1)
+  siteName             String   @default("Sardar Khushinder Singh Jand Sahib") @map("site_name") @db.VarChar(255)
+  siteTitle            String   @default("Official Portal - Social Worker & Punjab Sanjhivalta Dal Leader") @map("site_title") @db.VarChar(255)
+  siteDescription      String   @default("Dedicated to public service, rural youth empowerment, healthcare, and community welfare across Punjab.") @map("site_description") @db.Text
+  faviconUrl           String?  @map("favicon_url") @db.VarChar(255)
+  mainLogoUrl          String?  @map("main_logo_url") @db.VarChar(255)
+  footerLogoUrl        String?  @map("footer_logo_url") @db.VarChar(255)
+  contactEmail         String   @default("contact@khushindersingh.org") @map("contact_email") @db.VarChar(191)
+  contactPhone         String   @default("+91 98765 43210") @map("contact_phone") @db.VarChar(50)
+  contactAddress       String   @default("Jand Sahib, Sri Muktsar Sahib / Bathinda Region, Punjab, India") @map("contact_address") @db.Text
+  whatsappNumber       String   @default("+919876543210") @map("whatsapp_number") @db.VarChar(50)
+  primaryColor         String   @default("#0B192C") @map("primary_color") @db.VarChar(20)
+  secondaryColor       String   @default("#1B2A4A") @map("secondary_color") @db.VarChar(20)
+  accentColor          String   @default("#F59E0B") @map("accent_color") @db.VarChar(20)
+  defaultLanguage      String   @default("en") @map("default_language") @db.VarChar(10)
+  allowLanguageToggle  Boolean  @default(true) @map("allow_language_toggle")
+  punjabiFirst         Boolean  @default(false) @map("punjabi_first")
+  copyrightText        String   @default("© 2026 Sardar Khushinder Singh Jand Sahib. All Rights Reserved. Punjab Sanjhivalta Dal.") @map("copyright_text") @db.VarChar(255)
+  createdAt            DateTime @default(now()) @map("created_at")
+  updatedAt            DateTime @updatedAt @map("updated_at")
+
+  @@map("website_settings")
+}
+
+model PageContent {
+  id         Int      @id @default(autoincrement())
+  pageSlug   String   @map("page_slug") @db.VarChar(100)
+  sectionKey String   @map("section_key") @db.VarChar(100)
+  titleEn    String?  @map("title_en") @db.VarChar(255)
+  titlePa    String?  @map("title_pa") @db.VarChar(255)
+  contentEn  String?  @map("content_en") @db.LongText
+  contentPa  String?  @map("content_pa") @db.LongText
+  extraData  String?  @map("extra_data") @db.Text
+  isActive   Boolean  @default(true) @map("is_active")
+  updatedAt  DateTime @updatedAt @map("updated_at")
+
+  @@unique([pageSlug, sectionKey])
+  @@map("page_content")
+}
+
+model Biography {
+  id              Int      @id @default(1)
+  fullNameEn      String   @default("Sardar Khushinder Singh Jand Sahib") @map("full_name_en") @db.VarChar(255)
+  fullNamePa      String   @default("ਸਰਦਾਰ ਖੁਸ਼ਇੰਦਰ ਸਿੰਘ ਜੰਡ ਸਾਹਿਬ") @map("full_name_pa") @db.VarChar(255)
+  titleEn         String   @default("Social Worker | Member, Punjab Sanjhivalta Dal") @map("title_en") @db.VarChar(255)
+  titlePa         String   @default("ਸਮਾਜ ਸੇਵੀ | ਮੈਂਬਰ, ਪੰਜਾਬ ਸਾਂਝੀਵਾਲਤਾ ਦਲ") @map("title_pa") @db.VarChar(255)
+  identityEn      String   @default("Dedicated Social Worker from Jand Sahib committed to people's welfare, community harmony, and transparent public service in Punjab.") @map("identity_en") @db.Text
+  identityPa      String   @default("ਜੰਡ ਸਾਹਿਬ ਤੋਂ ਲੋਕ ਸੇਵਾ, ਭਾਈਚਾਰਕ ਸਾਂਝ ਅਤੇ ਪੰਜਾਬ ਦੇ ਵਿਕਾਸ ਨੂੰ ਸਮਰਪਿਤ ਸੁਹਿਰਦ ਸਮਾਜ ਸੇਵਕ।") @map("identity_pa") @db.Text
+  profileImageUrl String?  @map("profile_image_url") @db.VarChar(255)
+  shortBioEn      String   @map("short_bio_en") @db.Text
+  shortBioPa      String   @map("short_bio_pa") @db.Text
+  fullBioEn       String   @map("full_bio_en") @db.LongText
+  fullBioPa       String   @map("full_bio_pa") @db.LongText
+  journeyEn       String   @map("journey_en") @db.LongText
+  journeyPa       String   @map("journey_pa") @db.LongText
+  publicServiceEn String   @map("public_service_en") @db.LongText
+  publicServicePa String   @map("public_service_pa") @db.LongText
+  visionEn        String   @map("vision_en") @db.LongText
+  visionPa        String   @map("vision_pa") @db.LongText
+  organizationEn  String   @map("organization_en") @db.LongText
+  organizationPa  String   @map("organization_pa") @db.LongText
+  quoteEn         String?  @map("quote_en") @db.VarChar(500)
+  quotePa         String?  @map("quote_pa") @db.VarChar(500)
+  updatedAt       DateTime @updatedAt @map("updated_at")
+
+  @@map("biography")
+}
+
+model HeroSlide {
+  id             Int      @id @default(autoincrement())
+  titleEn        String   @map("title_en") @db.VarChar(255)
+  titlePa        String   @map("title_pa") @db.VarChar(255)
+  subtitleEn     String?  @map("subtitle_en") @db.VarChar(255)
+  subtitlePa     String?  @map("subtitle_pa") @db.VarChar(255)
+  descriptionEn  String?  @map("description_en") @db.Text
+  descriptionPa  String?  @map("description_pa") @db.Text
+  imageUrl       String   @map("image_url") @db.VarChar(255)
+  videoUrl       String?  @map("video_url") @db.VarChar(255)
+  btn1TextEn     String?  @map("btn1_text_en") @db.VarChar(100)
+  btn1TextPa     String?  @map("btn1_text_pa") @db.VarChar(100)
+  btn1Url        String?  @map("btn1_url") @db.VarChar(255)
+  btn2TextEn     String?  @map("btn2_text_en") @db.VarChar(100)
+  btn2TextPa     String?  @map("btn2_text_pa") @db.VarChar(100)
+  btn2Url        String?  @map("btn2_url") @db.VarChar(255)
+  overlayOpacity Float    @default(0.4) @map("overlay_opacity")
+  displayOrder   Int      @default(0) @map("display_order")
+  isActive       Boolean  @default(true) @map("is_active")
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  @@map("hero_slides")
+}
+
+model LogoSlide {
+  id           Int      @id @default(autoincrement())
+  title        String   @db.VarChar(100)
+  imageUrl     String   @map("image_url") @db.VarChar(255)
+  displayOrder Int      @default(0) @map("display_order")
+  isActive     Boolean  @default(true) @map("is_active")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("logo_slides")
+}
+
+model BlogCategory {
+  id          Int      @id @default(autoincrement())
+  nameEn      String   @map("name_en") @db.VarChar(100)
+  namePa      String   @map("name_pa") @db.VarChar(100)
+  slug        String   @unique @db.VarChar(100)
+  description String?  @db.Text
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  blogs       Blog[]
+
+  @@map("blog_categories")
+}
+
+model BlogTag {
+  id        Int               @id @default(autoincrement())
+  nameEn    String            @map("name_en") @db.VarChar(100)
+  namePa    String            @map("name_pa") @db.VarChar(100)
+  slug      String            @unique @db.VarChar(100)
+  createdAt DateTime          @default(now()) @map("created_at")
+  blogs     BlogTagRelation[]
+
+  @@map("blog_tags")
+}
+
+model Blog {
+  id            Int               @id @default(autoincrement())
+  titleEn       String            @map("title_en") @db.VarChar(255)
+  titlePa       String            @map("title_pa") @db.VarChar(255)
+  slug          String            @unique @db.VarChar(191)
+  shortDescEn   String            @map("short_desc_en") @db.Text
+  shortDescPa   String            @map("short_desc_pa") @db.Text
+  contentEn     String            @map("content_en") @db.LongText
+  contentPa     String            @map("content_pa") @db.LongText
+  featuredImage String?           @map("featured_image") @db.VarChar(255)
+  galleryImages String?           @map("gallery_images") @db.Text
+  videoUrl      String?           @map("video_url") @db.VarChar(255)
+  categoryId    Int               @map("category_id")
+  category      BlogCategory      @relation(fields: [categoryId], references: [id])
+  isFeatured    Boolean           @default(false) @map("is_featured")
+  status        String            @default("published") @db.VarChar(50) // published, draft, scheduled
+  publishedAt   DateTime          @default(now()) @map("published_at")
+  authorName    String            @default("Sardar Khushinder Singh") @map("author_name") @db.VarChar(100)
+  metaTitle     String?           @map("meta_title") @db.VarChar(255)
+  metaDescription String?         @map("meta_description") @db.Text
+  metaKeywords  String?           @map("meta_keywords") @db.VarChar(255)
+  ogImage       String?           @map("og_image") @db.VarChar(255)
+  viewsCount    Int               @default(0) @map("views_count")
+  createdAt     DateTime          @default(now()) @map("created_at")
+  updatedAt     DateTime          @updatedAt @map("updated_at")
+  tags          BlogTagRelation[]
+
+  @@map("blogs")
+}
+
+model BlogTagRelation {
+  blogId Int  @map("blog_id")
+  tagId  Int  @map("tag_id")
+  blog   Blog @relation(fields: [blogId], references: [id], onDelete: Cascade)
+  tag    BlogTag @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([blogId, tagId])
+  @@map("blog_tag_relations")
+}
+
+model MediaLibrary {
+  id        Int      @id @default(autoincrement())
+  fileName  String   @map("file_name") @db.VarChar(255)
+  fileUrl   String   @map("file_url") @db.VarChar(255)
+  fileType  String   @map("file_type") @db.VarChar(50) // image, video, document
+  fileSize  Int      @default(0) @map("file_size")
+  mimeType  String   @map("mime_type") @db.VarChar(100)
+  altText   String?  @map("alt_text") @db.VarChar(255)
+  title     String?  @db.VarChar(255)
+  folder    String   @default("general") @db.VarChar(100)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("media_library")
+}
+
+model Gallery {
+  id           Int            @id @default(autoincrement())
+  titleEn      String         @map("title_en") @db.VarChar(255)
+  titlePa      String         @map("title_pa") @db.VarChar(255)
+  slug         String         @unique @db.VarChar(100)
+  category     String         @default("social_work") @db.VarChar(100)
+  description  String?        @db.Text
+  isActive     Boolean        @default(true) @map("is_active")
+  displayOrder Int            @default(0) @map("display_order")
+  createdAt    DateTime       @default(now()) @map("created_at")
+  images       GalleryImage[]
+
+  @@map("galleries")
+}
+
+model GalleryImage {
+  id           Int      @id @default(autoincrement())
+  galleryId    Int      @map("gallery_id")
+  gallery      Gallery  @relation(fields: [galleryId], references: [id], onDelete: Cascade)
+  imageUrl     String   @map("image_url") @db.VarChar(255)
+  titleEn      String?  @map("title_en") @db.VarChar(255)
+  titlePa      String?  @map("title_pa") @db.VarChar(255)
+  caption      String?  @db.Text
+  videoUrl     String?  @map("video_url") @db.VarChar(255)
+  isFeatured   Boolean  @default(false) @map("is_featured")
+  displayOrder Int      @default(0) @map("display_order")
+  createdAt    DateTime @default(now()) @map("created_at")
+
+  @@map("gallery_images")
+}
+
+model Advertisement {
+  id             Int       @id @default(autoincrement())
+  title          String    @db.VarChar(255)
+  placement      String    @db.VarChar(100) // homepage, between_blogs, blog_sidebar, before_article, after_article, footer
+  imageUrl       String?   @map("image_url") @db.VarChar(255)
+  destinationUrl String?   @map("destination_url") @db.VarChar(255)
+  htmlCode       String?   @map("html_code") @db.LongText
+  isActive       Boolean   @default(true) @map("is_active")
+  startDate      DateTime? @map("start_date")
+  endDate        DateTime? @map("end_date")
+  clicksCount    Int       @default(0) @map("clicks_count")
+  viewsCount     Int       @default(0) @map("views_count")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  @@map("advertisements")
+}
+
+model SocialAccount {
+  id                   Int       @id @default(autoincrement())
+  platform             String    @unique @db.VarChar(50) // facebook, instagram, youtube, twitter, whatsapp, telegram
+  accountName          String    @map("account_name") @db.VarChar(100)
+  profileUrl           String    @map("profile_url") @db.VarChar(255)
+  pageId               String?   @map("page_id") @db.VarChar(100)
+  businessAccountId    String?   @map("business_account_id") @db.VarChar(100)
+  accessToken          String?   @map("access_token") @db.Text
+  refreshToken         String?   @map("refresh_token") @db.Text
+  tokenExpiresAt       DateTime? @map("token_expires_at")
+  isActive             Boolean   @default(true) @map("is_active")
+  isFeedEnabled        Boolean   @default(true) @map("is_feed_enabled")
+  lastSyncedAt         DateTime? @map("last_synced_at")
+  syncIntervalMinutes  Int       @default(60) @map("sync_interval_minutes")
+  status               String    @default("configured") @db.VarChar(50) // active, expired, error, configured
+  createdAt            DateTime  @default(now()) @map("created_at")
+  updatedAt            DateTime  @updatedAt @map("updated_at")
+
+  @@map("social_accounts")
+}
+
+model SocialPostCache {
+  id            Int      @id @default(autoincrement())
+  platform      String   @db.VarChar(50) // facebook, instagram
+  postId        String   @unique @map("post_id") @db.VarChar(191)
+  authorName    String   @default("Khushinder Singh Jand Sahib") @map("author_name") @db.VarChar(100)
+  caption       String?  @db.LongText
+  mediaUrl      String?  @map("media_url") @db.VarChar(500)
+  mediaType     String   @default("IMAGE") @map("media_type") @db.VarChar(50)
+  permalink     String   @db.VarChar(500)
+  timestamp     DateTime @default(now())
+  likesCount    Int      @default(0) @map("likes_count")
+  commentsCount Int      @default(0) @map("comments_count")
+  rawData       String?  @map("raw_data") @db.LongText
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  @@map("social_posts_cache")
+}
+
+model SeoSetting {
+  id                      Int      @id @default(autoincrement())
+  pagePath                String   @unique @map("page_path") @db.VarChar(100) // /, /about, /blog, /contact
+  metaTitle               String   @map("meta_title") @db.VarChar(255)
+  metaDescription         String   @map("meta_description") @db.Text
+  metaKeywords            String?  @map("meta_keywords") @db.VarChar(255)
+  ogTitle                 String?  @map("og_title") @db.VarChar(255)
+  ogDescription           String?  @map("og_description") @db.Text
+  ogImage                 String?  @map("og_image") @db.VarChar(255)
+  twitterCard             String   @default("summary_large_image") @map("twitter_card") @db.VarChar(50)
+  canonicalUrl            String?  @map("canonical_url") @db.VarChar(255)
+  googleAnalyticsId       String?  @map("google_analytics_id") @db.VarChar(50)
+  googleSearchConsoleCode String?  @map("google_search_console_code") @db.VarChar(100)
+  schemaMarkup            String?  @map("schema_markup") @db.LongText
+  isIndexable             Boolean  @default(true) @map("is_indexable")
+  updatedAt               DateTime @updatedAt @map("updated_at")
+
+  @@map("seo_settings")
+}
+
+model SmtpSetting {
+  id                     Int      @id @default(1)
+  smtpHost               String   @default("smtp.gmail.com") @map("smtp_host") @db.VarChar(255)
+  smtpPort               Int      @default(587) @map("smtp_port")
+  smtpUsername           String   @default("notifications@khushindersingh.org") @map("smtp_username") @db.VarChar(191)
+  smtpPassword           String   @default("") @map("smtp_password") @db.VarChar(255)
+  encryption             String   @default("TLS") @db.VarChar(20) // SSL, TLS, NONE
+  senderName             String   @default("Office of Sardar Khushinder Singh") @map("sender_name") @db.VarChar(100)
+  senderEmail            String   @default("office@khushindersingh.org") @map("sender_email") @db.VarChar(191)
+  adminNotificationEmail String   @default("khushinder.jandsahib@gmail.com") @map("admin_notification_email") @db.VarChar(191)
+  isEnabled              Boolean  @default(true) @map("is_enabled")
+  updatedAt              DateTime @updatedAt @map("updated_at")
+
+  @@map("smtp_settings")
+}
+
+model ContactInquiry {
+  id           Int      @id @default(autoincrement())
+  fullName     String   @map("full_name") @db.VarChar(100)
+  email        String   @db.VarChar(191)
+  mobileNumber String   @map("mobile_number") @db.VarChar(50)
+  subject      String   @db.VarChar(255)
+  message      String   @db.LongText
+  isRead       Boolean  @default(false) @map("is_read")
+  isReplied    Boolean  @default(false) @map("is_replied")
+  adminNotes   String?  @map("admin_notes") @db.Text
+  ipAddress    String?  @map("ip_address") @db.VarChar(50)
+  userAgent    String?  @map("user_agent") @db.VarChar(255)
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("contact_inquiries")
+}
+
+model EmailTemplate {
+  id          Int      @id @default(autoincrement())
+  templateKey String   @unique @map("template_key") @db.VarChar(100) // contact_notification, visitor_confirmation
+  title       String   @db.VarChar(100)
+  subject     String   @db.VarChar(255)
+  bodyHtml    String   @map("body_html") @db.LongText
+  bodyText    String?  @map("body_text") @db.LongText
+  variables   String?  @db.VarChar(255)
+  isActive    Boolean  @default(true) @map("is_active")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("email_templates")
+}
+
+model AiSetting {
+  id                 Int      @id @default(1)
+  isEnabled          Boolean  @default(true) @map("is_enabled")
+  provider           String   @default("gemini") @db.VarChar(50) // gemini, openai, local
+  apiKey             String?  @map("api_key") @db.VarChar(255)
+  modelName          String   @default("gemini-1.5-flash") @map("model_name") @db.VarChar(100)
+  systemPrompt       String   @map("system_prompt") @db.LongText
+  welcomeMessageEn   String   @default("Sat Sri Akal! Welcome to the official portal of Sardar Khushinder Singh Jand Sahib. How may I assist you regarding his public service, initiatives, or latest updates?") @map("welcome_message_en") @db.Text
+  welcomeMessagePa   String   @default("ਸਤਿ ਸ੍ਰੀ ਅਕਾਲ ਜੀ! ਸਰਦਾਰ ਖੁਸ਼ਇੰਦਰ ਸਿੰਘ ਜੰਡ ਸਾਹਿਬ ਦੇ ਅਧਿਕਾਰਤ ਪੋਰਟਲ 'ਤੇ ਤੁਹਾਡਾ ਸਵਾਗਤ ਹੈ। ਮੈਂ ਉਹਨਾਂ ਦੀ ਸਮਾਜ ਸੇਵਾ, ਲੋਕ ਭਲਾਈ ਕਾਰਜਾਂ ਅਤੇ ਤਾਜ਼ਾ ਗਤੀਵਿਧੀਆਂ ਬਾਰੇ ਤੁਹਾਡੀ ਕੀ ਮਦਦ ਕਰ ਸਕਦਾ ਹਾਂ?") @map("welcome_message_pa") @db.Text
+  fallbackResponseEn String   @default("Verified information on this specific topic is currently not available in our records. Please feel free to reach out directly through our Contact page or call the office.") @map("fallback_response_en") @db.Text
+  fallbackResponsePa String   @default("ਇਸ ਵਿਸ਼ੇ ਸੰਬੰਧੀ ਪ੍ਰਮਾਣਿਤ ਜਾਣਕਾਰੀ ਇਸ ਵੇਲੇ ਉਪਲਬਧ ਨਹੀਂ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਸੰਪਰਕ ਪੰਨੇ ਰਾਹੀਂ ਸਿੱਧਾ ਦਫ਼ਤਰ ਨਾਲ ਰਾਬਤਾ ਕਾਇਮ ਕਰੋ।") @map("fallback_response_pa") @db.Text
+  responseLanguage   String   @default("auto") @map("response_language") @db.VarChar(20) // auto, en, pa, hi
+  maxTokens          Int      @default(500) @map("max_tokens")
+  temperature        Float    @default(0.3)
+  updatedAt          DateTime @updatedAt @map("updated_at")
+
+  @@map("ai_settings")
+}
+
+model AiKnowledgeSource {
+  id          Int      @id @default(autoincrement())
+  title       String   @db.VarChar(255)
+  category    String   @default("general") @db.VarChar(100) // biography, public_service, sanjhivalta_dal, contact, faqs
+  content     String   @db.LongText
+  documentUrl String?  @map("document_url") @db.VarChar(255)
+  isActive    Boolean  @default(true) @map("is_active")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@map("ai_knowledge_sources")
+}
+
+model AiConversation {
+  id          Int         @id @default(autoincrement())
+  sessionId   String      @unique @map("session_id") @db.VarChar(100)
+  visitorIp   String?     @map("visitor_ip") @db.VarChar(50)
+  visitorName String?     @map("visitor_name") @db.VarChar(100)
+  language    String      @default("en") @db.VarChar(20)
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+  messages    AiMessage[]
+
+  @@map("ai_conversations")
+}
+
+model AiMessage {
+  id             Int            @id @default(autoincrement())
+  conversationId Int            @map("conversation_id")
+  conversation   AiConversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  sender         String         @db.VarChar(20) // user, assistant
+  message        String         @db.LongText
+  sourcesUsed    String?        @map("sources_used") @db.Text
+  createdAt      DateTime       @default(now()) @map("created_at")
+
+  @@map("ai_messages")
+}
+
+model ActivityLog {
+  id        Int      @id @default(autoincrement())
+  userId    Int?     @map("user_id")
+  user      User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  action    String   @db.VarChar(100)
+  module    String   @db.VarChar(100)
+  details   String?  @db.Text
+  ipAddress String?  @map("ip_address") @db.VarChar(50)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@map("activity_logs")
+}
+
+model HomepageSection {
+  id           Int      @id @default(autoincrement())
+  sectionKey   String   @unique @map("section_key") @db.VarChar(100)
+  titleEn      String   @map("title_en") @db.VarChar(255)
+  titlePa      String   @map("title_pa") @db.VarChar(255)
+  subtitleEn   String?  @map("subtitle_en") @db.VarChar(255)
+  subtitlePa   String?  @map("subtitle_pa") @db.VarChar(255)
+  isEnabled    Boolean  @default(true) @map("is_enabled")
+  displayOrder Int      @default(0) @map("display_order")
+  bgColor      String?  @map("bg_color") @db.VarChar(50)
+  postsCount   Int      @default(6) @map("posts_count")
+  extraJson    String?  @map("extra_json") @db.Text
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  @@map("homepage_sections")
+}

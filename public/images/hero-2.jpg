@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E1B4B" />
+      <stop offset="50%" stop-color="#0B192C" />
+      <stop offset="100%" stop-color="#312E81" />
+    </linearGradient>
+    <radialGradient id="glow" cx="50%" cy="40%" r="60%">
+      <stop offset="0%" stop-color="#F59E0B" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#0B192C" stop-opacity="0" />
+    </radialGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+  
+  <rect width="100%" height="100%" fill="url(#bg)" />
+  <rect width="100%" height="100%" fill="url(#glow)" />
+
+  <!-- Subtle Decorative geometric lines -->
+  <circle cx="960" cy="540" r="432" fill="none" stroke="#F59E0B" stroke-width="1.5" stroke-dasharray="8 6" opacity="0.25" />
+  <circle cx="960" cy="540" r="324" fill="none" stroke="#ffffff" stroke-width="1" opacity="0.15" />
+
+  <g transform="translate(0, 0)">
+    <!-- Badge -->
+    <rect x="800" y="194.4" width="320" height="32" rx="16" fill="#F59E0B" fill-opacity="0.2" stroke="#F59E0B" stroke-width="1.5" />
+    <text x="960" y="214.4" font-family="system-ui, -apple-system, sans-serif" font-size="13" font-weight="700" fill="#FBBF24" text-anchor="middle" letter-spacing="2">VILLAGE HEALTH CAMPS & SPORTS</text>
+
+    <!-- Main Title -->
+    <text x="960" y="518.4" font-family="system-ui, -apple-system, sans-serif" font-size="36" font-weight="800" fill="#FFFFFF" text-anchor="middle" filter="url(#shadow)">
+      Empowering Youth & Rural Healthcare
+    </text>
+
+    <!-- Subtitle -->
+    <text x="960" y="626.4" font-family="system-ui, -apple-system, sans-serif" font-size="18" font-weight="500" fill="#E2E8F0" text-anchor="middle" opacity="0.95">
+      ਪੇਂਡੂ ਸਿਹਤ ਸੇਵਾਵਾਂ ਅਤੇ ਨੌਜਵਾਨਾਂ ਦੀ ਬਿਹਤਰੀ ਲਈ ਯਤਨਸ਼ੀਲ
+    </text>
+
+    <!-- Cultural emblem representation -->
+    <g transform="translate(930, 777.6) scale(0.6)">
+      <path d="M50 0 L100 40 L80 100 L20 100 L0 40 Z" fill="#F59E0B" opacity="0.9" />
+      <circle cx="50" cy="50" r="24" fill="#0B192C" />
+      <path d="M50 30 L55 45 L70 45 L58 55 L62 70 L50 60 L38 70 L42 55 L30 45 L45 45 Z" fill="#FBBF24" />
+    </g>
+  </g>
+</svg>
