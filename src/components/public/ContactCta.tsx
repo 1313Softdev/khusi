@@ -22,7 +22,7 @@ export default function ContactCta({ settings }: ContactCtaProps) {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_30%,rgba(245,158,11,0.1),transparent_50%)]" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="bg-gradient-to-br from-navy-900 to-navy-950 rounded-3xl p-8 sm:p-12 lg:p-16 border border-saffron-500/30 shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-10">
+        <div className="glass-panel rounded-3xl p-8 sm:p-12 lg:p-16 border border-saffron-500/30 shadow-2xl flex flex-col lg:flex-row items-center justify-between gap-10">
           <div className="max-w-2xl text-center lg:text-left">
             <span className="text-xs uppercase tracking-widest font-extrabold text-saffron-400 bg-saffron-500/10 px-3.5 py-1 rounded-full border border-saffron-500/20 inline-block mb-3">
               {t('Open Public Communication', 'ਖੁੱਲ੍ਹਾ ਜਨਤਕ ਰਾਬਤਾ')}
@@ -53,7 +53,7 @@ export default function ContactCta({ settings }: ContactCtaProps) {
           <div className="flex flex-col sm:flex-row items-center gap-4 shrink-0">
             <Link
               href="/contact"
-              className="flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-saffron-500 to-amber-500 hover:from-saffron-600 hover:to-amber-600 text-navy-950 font-extrabold text-sm sm:text-base shadow-glow-saffron transform hover:-translate-y-0.5 transition-all"
+              className="btn-shimmer flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-saffron-500 via-amber-500 to-gold-500 hover:from-saffron-600 hover:to-amber-600 text-navy-950 font-extrabold text-sm sm:text-base shadow-glow-saffron transform hover:-translate-y-0.5 transition-all"
             >
               <span>{t('Write to Khushinder Singh', 'ਸਿੱਧਾ ਸੁਨੇਹਾ ਭੇਜੋ')}</span>
               <ArrowRight className="w-4 h-4" />

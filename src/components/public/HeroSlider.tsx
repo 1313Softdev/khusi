@@ -99,23 +99,23 @@ export default function HeroSlider({ slides = [] }: HeroSliderProps) {
       {/* Hero Content */}
       <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center flex flex-col items-center">
         {/* Verified Identity Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-navy-900/90 border border-saffron-500/40 text-saffron-400 text-xs sm:text-sm font-bold uppercase tracking-widest mb-6 shadow-glow-saffron backdrop-blur-sm animate-in fade-in slide-in-from-bottom-2 duration-500">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-navy-900/90 border border-saffron-500/40 text-saffron-400 text-xs sm:text-sm font-bold uppercase tracking-widest mb-6 shadow-glow-saffron backdrop-blur-sm animate-pulse-subtle">
           <ShieldCheck className="w-4 h-4 text-saffron-400" />
           <span>{t(slide.subtitleEn || 'Social Worker | Member of Punjab Sanjhivalta Dal', slide.subtitlePa || 'ਸਮਾਜ ਸੇਵੀ | ਮੈਂਬਰ, ਪੰਜਾਬ ਸਾਂਝੀਵਾਲਤਾ ਦਲ')}</span>
         </div>
 
         {/* Prominent Name Heading */}
-        <h1 className="text-3xl sm:text-5xl md:text-6xl font-extrabold text-white tracking-tight leading-tight sm:leading-none mb-4 font-serif">
+        <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-extrabold text-white tracking-tight leading-tight sm:leading-none mb-4 font-serif drop-shadow-md">
           {t('Sardar Khushinder Singh Jand Sahib', 'ਸਰਦਾਰ ਖੁਸ਼ਇੰਦਰ ਸਿੰਘ ਜੰਡ ਸਾਹਿਬ')}
         </h1>
 
-        {/* Dynamic Slide Tagline */}
-        <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-saffron-300 max-w-3xl mb-6">
+        {/* Dynamic Slide Tagline with Gold Shimmer */}
+        <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold text-gradient-gold max-w-3xl mb-6 font-serif">
           {t(slide.titleEn, slide.titlePa)}
         </h2>
 
         {/* Dynamic Slide Description */}
-        <p className="text-base sm:text-lg md:text-xl text-gray-200/90 max-w-2xl font-normal leading-relaxed mb-10">
+        <p className="text-base sm:text-lg md:text-xl text-gray-200/95 max-w-2xl font-normal leading-relaxed mb-10 drop-shadow">
           {t(
             slide.descriptionEn || 'Dedicated to transparent public service, rural healthcare, youth empowerment, and the progress of Punjab.',
             slide.descriptionPa || 'ਪੰਜਾਬ ਦੇ ਪਿੰਡਾਂ, ਨੌਜਵਾਨੀ ਅਤੇ ਕਿਸਾਨੀ ਦੀ ਬਿਹਤਰੀ ਲਈ ਦਿਨ-ਰਾਤ ਤਤਪਰ। ਮੈਂਬਰ, ਪੰਜਾਬ ਸਾਂਝੀਵਾਲਤਾ ਦਲ।'
@@ -126,7 +126,7 @@ export default function HeroSlider({ slides = [] }: HeroSliderProps) {
         <div className="flex flex-wrap items-center justify-center gap-4">
           <Link
             href={slide.btn1Url || '/about'}
-            className="flex items-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-saffron-500 to-amber-500 hover:from-saffron-600 hover:to-amber-600 text-navy-950 font-extrabold text-sm sm:text-base shadow-glow-saffron transform hover:-translate-y-0.5 transition-all"
+            className="btn-shimmer flex items-center gap-2 px-8 py-4 rounded-full bg-gradient-to-r from-saffron-500 via-amber-500 to-gold-500 hover:from-saffron-600 hover:to-amber-600 text-navy-950 font-extrabold text-sm sm:text-base shadow-glow-saffron transform hover:-translate-y-0.5 transition-all"
           >
             <span>{t(slide.btn1TextEn || 'About Me', slide.btn1TextPa || 'ਮੇਰੇ ਬਾਰੇ')}</span>
             <ArrowRight className="w-4 h-4" />
@@ -134,7 +134,7 @@ export default function HeroSlider({ slides = [] }: HeroSliderProps) {
 
           <Link
             href="/blog"
-            className="flex items-center gap-2 px-7 py-3.5 rounded-full bg-navy-800/80 hover:bg-navy-700/90 text-white font-bold text-sm sm:text-base border border-white/20 hover:border-saffron-400/60 backdrop-blur-sm transition-all"
+            className="flex items-center gap-2 px-8 py-4 rounded-full bg-navy-900/85 hover:bg-navy-800 text-white font-bold text-sm sm:text-base border border-white/20 hover:border-saffron-400/60 backdrop-blur-md transition-all shadow-md transform hover:-translate-y-0.5"
           >
             <HeartHandshake className="w-4 h-4 text-saffron-400" />
             <span>{t('Read Latest Updates', 'ਤਾਜ਼ਾ ਖ਼ਬਰਾਂ ਪੜ੍ਹੋ')}</span>
@@ -142,7 +142,7 @@ export default function HeroSlider({ slides = [] }: HeroSliderProps) {
 
           <Link
             href={slide.btn2Url || '/contact'}
-            className="flex items-center gap-2 px-7 py-3.5 rounded-full bg-white/10 hover:bg-white/20 text-gray-100 font-semibold text-sm sm:text-base border border-white/10 hover:border-white/30 backdrop-blur-sm transition-all"
+            className="flex items-center gap-2 px-7 py-4 rounded-full bg-white/10 hover:bg-white/20 text-gray-100 font-semibold text-sm sm:text-base border border-white/15 hover:border-white/30 backdrop-blur-md transition-all transform hover:-translate-y-0.5"
           >
             <PhoneCall className="w-4 h-4 text-amber-300" />
             <span>{t(slide.btn2TextEn || 'Contact Me', slide.btn2TextPa || 'ਸੰਪਰਕ ਕਰੋ')}</span>

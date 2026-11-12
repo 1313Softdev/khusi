@@ -72,7 +72,7 @@ export default function LatestBlogs({
             return (
               <article
                 key={blog.id}
-                className="bg-navy-950 rounded-2xl overflow-hidden border border-navy-800 hover:border-saffron-500/50 transition-all duration-300 flex flex-col group hover:-translate-y-1 shadow-xl"
+                className="glass-card rounded-2xl overflow-hidden flex flex-col group card-hover-lift shadow-xl"
               >
                 {/* Featured Image & Badge */}
                 <div className="relative aspect-[16/10] bg-navy-900 overflow-hidden">

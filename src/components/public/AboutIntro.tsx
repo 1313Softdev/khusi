@@ -57,17 +57,17 @@ export default function AboutIntro({ bio }: AboutIntroProps) {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           {/* Left Column: Profile Card with Golden Border */}
           <div className="lg:col-span-5 flex flex-col items-center">
-            <div className="relative w-full max-w-md aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-2 border-saffron-500/40 bg-navy-900 group">
+            <div className="relative w-full max-w-md aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl border-2 border-saffron-500/40 bg-navy-900 group card-hover-lift">
               <img
                 src={bio.profileImageUrl || '/images/khushinder-hero.png'}
                 alt={bio.fullNameEn}
                 className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-transparent to-transparent opacity-80" />
+              <div className="absolute inset-0 bg-gradient-to-t from-navy-950 via-transparent to-transparent opacity-85" />
 
               {/* Bottom Identity Pill */}
-              <div className="absolute bottom-5 left-5 right-5 p-4 rounded-2xl bg-navy-900/90 backdrop-blur-md border border-saffron-500/30 text-center">
-                <span className="text-sm font-bold text-white font-serif block">
+              <div className="absolute bottom-5 left-5 right-5 p-4 rounded-2xl bg-navy-900/90 backdrop-blur-md border border-saffron-500/30 text-center shadow-lg">
+                <span className="text-sm sm:text-base font-bold text-white font-serif block">
                   {t(bio.fullNameEn, bio.fullNamePa)}
                 </span>
                 <span className="text-xs text-saffron-400 font-semibold block mt-0.5">
@@ -109,7 +109,7 @@ export default function AboutIntro({ bio }: AboutIntroProps) {
                 return (
                   <div
                     key={idx}
-                    className="p-4 rounded-xl bg-navy-950/50 border border-navy-800 hover:border-saffron-500/40 transition-colors"
+                    className="p-5 rounded-2xl glass-card card-hover-lift"
                   >
                     <Icon className="w-5 h-5 text-saffron-400 mb-2" />
                     <span className="text-xl sm:text-2xl font-extrabold text-white block">
@@ -127,7 +127,7 @@ export default function AboutIntro({ bio }: AboutIntroProps) {
             <div className="pt-2">
               <Link
                 href="/about"
-                className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-saffron-500 hover:bg-saffron-600 text-navy-950 font-bold text-sm shadow-glow-saffron transition-all transform hover:-translate-y-0.5"
+                className="btn-shimmer inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-saffron-500 to-amber-500 hover:from-saffron-600 hover:to-amber-600 text-navy-950 font-extrabold text-sm shadow-glow-saffron transition-all transform hover:-translate-y-0.5"
               >
                 <span>{t('Read Complete Biography & Vision', 'ਮੇਰੀ ਸਮਾਜ ਸੇਵਾ ਤੇ ਸੋਚ ਬਾਰੇ ਵਿਸਥਾਰ ਨਾਲ ਪੜ੍ਹੋ')}</span>
                 <ArrowRight className="w-4 h-4" />

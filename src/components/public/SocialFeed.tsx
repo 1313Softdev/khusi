@@ -117,7 +117,7 @@ export default function SocialFeed({
 
         {/* Post Grid */}
         {filteredPosts.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-6">
             {filteredPosts.map((post) => {
               const isFb = post.platform.toLowerCase() === 'facebook';
               const dateStr = new Date(post.timestamp).toLocaleDateString(undefined, {
@@ -129,24 +129,24 @@ export default function SocialFeed({
               return (
                 <div
                   key={post.id || post.postId}
-                  className="bg-navy-900/90 rounded-2xl overflow-hidden border border-navy-800 hover:border-saffron-500/40 transition-all duration-300 flex flex-col group hover:-translate-y-1 shadow-lg"
+                  className="glass-card rounded-2xl overflow-hidden flex flex-col group card-hover-lift shadow-xl"
                 >
                   {/* Card Header */}
-                  <div className="p-4 flex items-center justify-between border-b border-navy-800/80 bg-navy-950/40">
+                  <div className="p-4 flex items-center justify-between border-b border-white/5 bg-navy-950/60">
                     <div className="flex items-center gap-2.5">
                       <div
-                        className={`w-7 h-7 rounded-full flex items-center justify-center font-bold text-xs ${
+                        className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shadow-md ${
                           isFb ? 'bg-[#1877F2] text-white' : 'bg-gradient-to-tr from-yellow-500 via-pink-500 to-purple-600 text-white'
                         }`}
                       >
                         {isFb ? 'f' : 'ig'}
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-xs font-bold text-gray-200 truncate max-w-[130px]">
+                        <span className="text-xs font-bold text-gray-200 truncate max-w-[150px]">
                           {post.authorName || 'Sardar Khushinder Singh'}
                         </span>
-                        <span className="text-[10px] text-gray-400 flex items-center gap-1">
-                          <Calendar className="w-2.5 h-2.5" />
+                        <span className="text-[10px] text-gray-400 flex items-center gap-1 font-sans">
+                          <Calendar className="w-2.5 h-2.5 text-saffron-400" />
                           {dateStr}
                         </span>
                       </div>
@@ -156,7 +156,7 @@ export default function SocialFeed({
                       href={post.permalink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-gray-400 hover:text-saffron-400 transition-colors p-1"
+                      className="text-gray-400 hover:text-saffron-400 transition-colors p-1.5 rounded-full hover:bg-white/5"
                       title="View original post"
                     >
                       <ExternalLink className="w-4 h-4" />
@@ -165,30 +165,31 @@ export default function SocialFeed({
 
                   {/* Card Media */}
                   {post.mediaUrl && (
-                    <div className="relative aspect-video sm:aspect-square bg-navy-950 overflow-hidden">
+                    <div className="relative aspect-video sm:aspect-[16/10] bg-navy-950 overflow-hidden">
                       <img
                         src={post.mediaUrl}
                         alt="Social post media"
-                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                         loading="lazy"
                       />
+                      <div className="absolute inset-0 bg-gradient-to-t from-navy-950/40 via-transparent to-transparent pointer-events-none" />
                     </div>
                   )}
 
                   {/* Card Caption */}
-                  <div className="p-4 flex-1 flex flex-col justify-between">
-                    <p className="text-xs sm:text-sm text-gray-300 line-clamp-4 leading-relaxed font-normal">
+                  <div className="p-5 flex-1 flex flex-col justify-between">
+                    <p className="text-xs sm:text-sm text-gray-200 line-clamp-4 leading-relaxed font-normal">
                       {post.caption || t('Verified public update from Sardar Khushinder Singh Jand Sahib.', 'ਸਰਦਾਰ ਖੁਸ਼ਇੰਦਰ ਸਿੰਘ ਜੰਡ ਸਾਹਿਬ ਵੱਲੋਂ ਤਾਜ਼ਾ ਜਨਤਕ ਅਪਡੇਟ।')}
                     </p>
 
                     {/* Likes & Comments Footer */}
-                    <div className="mt-4 pt-3 border-t border-navy-800/70 flex items-center justify-between text-xs text-gray-400">
-                      <div className="flex items-center gap-3">
-                        <span className="flex items-center gap-1 text-pink-400">
+                    <div className="mt-5 pt-3.5 border-t border-white/5 flex items-center justify-between text-xs text-gray-400">
+                      <div className="flex items-center gap-4">
+                        <span className="flex items-center gap-1.5 text-pink-400 font-medium">
                           <Heart className="w-3.5 h-3.5 fill-pink-500/20 text-pink-400" />
                           <span>{post.likesCount}</span>
                         </span>
-                        <span className="flex items-center gap-1 text-cyan-400">
+                        <span className="flex items-center gap-1.5 text-cyan-400 font-medium">
                           <MessageCircle className="w-3.5 h-3.5" />
                           <span>{post.commentsCount}</span>
                         </span>
@@ -198,10 +199,10 @@ export default function SocialFeed({
                         href={post.permalink}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="text-[11px] font-semibold text-saffron-400 hover:underline flex items-center gap-0.5"
+                        className="text-[11px] text-saffron-400 hover:text-saffron-300 font-bold flex items-center gap-1 group/btn"
                       >
                         <span>{t('View Post', 'ਪੋਸਟ ਦੇਖੋ')}</span>
-                        <ExternalLink className="w-3 h-3" />
+                        <ExternalLink className="w-3 h-3 group-hover/btn:translate-x-0.5 transition-transform" />
                       </a>
                     </div>
                   </div>

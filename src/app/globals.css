@@ -1,47 +1,200 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700;800;900&family=Inter:wght@300;400;500;600;700;800;900&family=Mukta+Mahee:wght@400;500;600;700;800&family=Noto+Sans+Gurmukhi:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-sans: 'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-gurmukhi: 'Noto Sans Gurmukhi', 'Mukta Mahee', 'Raavi', system-ui, sans-serif;
-  --font-display: 'Merriweather', Georgia, serif;
+  --font-display: 'Cinzel', Georgia, serif;
+  
+  --color-navy-base: #060D17;
+  --color-navy-card: #0B192C;
+  --color-navy-light: #1B2A4A;
+  --color-saffron: #F59E0B;
+  --color-gold: #FBBF24;
+}
+
+/* Base Body Styles */
+html {
+  scroll-behavior: smooth;
+  color-scheme: dark;
 }
 
 body {
-  color: #f1f5f9;
-  background: #060d17;
+  color: #F1F5F9;
+  background-color: #060D17;
   font-family: var(--font-sans);
   overflow-x: hidden;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Ensure Punjabi text renders beautifully with proper Gurmukhi typeface */
+:lang(pa), [lang="pa"], .font-gurmukhi {
+  font-family: var(--font-gurmukhi);
+  letter-spacing: 0.01em;
+  line-height: 1.6;
 }
 
 /* Custom Scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 9px;
+  height: 9px;
 }
+
 ::-webkit-scrollbar-track {
-  background: #0b192c;
+  background: #060D17;
 }
+
 ::-webkit-scrollbar-thumb {
-  background: #1e3a8a;
-  border-radius: 4px;
+  background: #1B2A4A;
+  border-radius: 9999px;
+  border: 2px solid #060D17;
 }
+
 ::-webkit-scrollbar-thumb:hover {
-  background: #f59e0b;
+  background: #F59E0B;
 }
 
-/* Utilities */
-.text-balance {
-  text-wrap: balance;
+/* Selection */
+::selection {
+  background: rgba(245, 158, 11, 0.35);
+  color: #FFFFFF;
 }
 
-.shadow-glow-saffron {
-  box-shadow: 0 0 25px -4px rgba(245, 158, 11, 0.45);
+/* Smooth Focus Rings */
+:focus-visible {
+  outline: 2px solid #F59E0B;
+  outline-offset: 2px;
 }
 
-.shadow-glow-navy {
-  box-shadow: 0 0 30px -5px rgba(11, 25, 44, 0.7);
+/* Custom Utilities & Glassmorphism */
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Vibrant Saffron/Gold Gradients */
+  .text-gradient-gold {
+    background: linear-gradient(135deg, #FFFBEB 0%, #FBBF24 50%, #D97706 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  .text-gradient-saffron {
+    background: linear-gradient(135deg, #FFE8A3 0%, #FFB300 50%, #E65100 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+
+  /* Glow Effects */
+  .shadow-glow-saffron {
+    box-shadow: 0 0 25px -4px rgba(245, 158, 11, 0.45);
+  }
+
+  .shadow-glow-saffron-lg {
+    box-shadow: 0 0 40px -6px rgba(245, 158, 11, 0.6);
+  }
+
+  .shadow-glow-navy {
+    box-shadow: 0 0 35px -5px rgba(11, 25, 44, 0.8);
+  }
+
+  /* Frosted Glass Panels */
+  .glass-panel {
+    background: rgba(11, 25, 44, 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+
+  .glass-card {
+    background: linear-gradient(145deg, rgba(16, 32, 57, 0.8) 0%, rgba(8, 18, 33, 0.9) 100%);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .glass-card:hover {
+    border-color: rgba(245, 158, 11, 0.4);
+    box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.6), 0 0 20px -5px rgba(245, 158, 11, 0.25);
+    transform: translateY(-3px);
+  }
+
+  /* Micro-interactions */
+  .card-hover-lift {
+    transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease;
+  }
+
+  .card-hover-lift:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 16px 36px -12px rgba(0, 0, 0, 0.7);
+  }
+
+  /* Shimmer Animation */
+  .btn-shimmer {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .btn-shimmer::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+      60deg,
+      transparent,
+      rgba(255, 255, 255, 0.15),
+      transparent
+    );
+    transform: rotate(30deg);
+    animation: shimmerEffect 4s infinite;
+  }
+
+  /* Mesh Background Patterns */
+  .bg-mesh-pattern {
+    background-image: 
+      radial-gradient(circle at 15% 20%, rgba(245, 158, 11, 0.08) 0%, transparent 40%),
+      radial-gradient(circle at 85% 65%, rgba(27, 42, 74, 0.35) 0%, transparent 50%),
+      radial-gradient(circle at 50% 90%, rgba(245, 158, 11, 0.05) 0%, transparent 40%);
+  }
+
+  .bg-subtle-grid {
+    background-size: 32px 32px;
+    background-image: 
+      linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  }
+}
+
+/* Keyframes */
+@keyframes shimmerEffect {
+  0% {
+    transform: translateX(-100%) rotate(30deg);
+  }
+  20%, 100% {
+    transform: translateX(100%) rotate(30deg);
+  }
+}
+
+@keyframes pulseSubtle {
+  0%, 100% {
+    opacity: 0.9;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+}
+
+.animate-pulse-subtle {
+  animation: pulseSubtle 3s ease-in-out infinite;
 }

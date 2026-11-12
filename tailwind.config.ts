@@ -19,6 +19,7 @@ const config: Config = {
           600: "#486581",
           700: "#334E68",
           800: "#1B2A4A",
+          850: "#13213B",
           900: "#0B192C",
           950: "#060D17",
         },
@@ -35,6 +36,7 @@ const config: Config = {
           900: "#E65100",
         },
         gold: {
+          300: "#FDE68A",
           400: "#FBBF24",
           500: "#F59E0B",
           600: "#D97706",
@@ -42,13 +44,18 @@ const config: Config = {
         }
       },
       fontFamily: {
-        sans: ["var(--font-sans)", "system-ui", "sans-serif"],
-        gurmukhi: ["var(--font-gurmukhi)", "Noto Sans Gurmukhi", "Arial Unicode MS", "sans-serif"],
-        display: ["var(--font-display)", "Georgia", "serif"],
+        sans: ["var(--font-sans)", "Plus Jakarta Sans", "Inter", "system-ui", "sans-serif"],
+        gurmukhi: ["var(--font-gurmukhi)", "Noto Sans Gurmukhi", "Mukta Mahee", "sans-serif"],
+        serif: ["var(--font-display)", "Cinzel", "Georgia", "serif"],
+        display: ["var(--font-display)", "Cinzel", "Georgia", "serif"],
       },
       boxShadow: {
-        'glow-saffron': '0 0 25px -5px rgba(245, 158, 11, 0.4)',
-        'glow-navy': '0 0 30px -5px rgba(11, 25, 44, 0.5)',
+        'glow-saffron': '0 0 25px -4px rgba(245, 158, 11, 0.45)',
+        'glow-saffron-lg': '0 0 40px -6px rgba(245, 158, 11, 0.6)',
+        'glow-navy': '0 0 35px -5px rgba(11, 25, 44, 0.7)',
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
       }
     },
   },

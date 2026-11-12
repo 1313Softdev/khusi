@@ -80,7 +80,7 @@ export default function GallerySection({ images = [] }: GallerySectionProps) {
             <div
               key={img.id}
               onClick={() => setLightboxIdx(idx)}
-              className="group relative aspect-[4/3] rounded-2xl overflow-hidden bg-navy-900 border border-navy-800 hover:border-saffron-500/50 cursor-pointer shadow-lg transition-all duration-300"
+              className="group relative aspect-[4/3] rounded-2xl overflow-hidden glass-card card-hover-lift cursor-pointer shadow-lg transition-all duration-300"
             >
               <img
                 src={img.imageUrl}
