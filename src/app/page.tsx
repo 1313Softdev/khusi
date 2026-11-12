@@ -94,8 +94,8 @@ export default async function HomePage() {
         {isSectionEnabled('social_feeds') && (
           <SocialFeed
             posts={cachedSocialPosts}
-            fbPageUrl={fbAccount?.profileUrl || 'https://facebook.com/khushinder.jandsahib'}
-            igProfileUrl={igAccount?.profileUrl || 'https://instagram.com/khushinder_jandsahib'}
+            fbPageUrl={fbAccount?.profileUrl || 'https://www.facebook.com/khushindersingh.sandhu'}
+            igProfileUrl={igAccount?.profileUrl || 'https://www.instagram.com/khushinder_singh'}
           />
         )}
 
