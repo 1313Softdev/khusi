@@ -659,7 +659,7 @@ INSERT INTO `seo_settings` (`id`, `page_path`, `meta_title`, `meta_description`,
 
 -- SMTP Settings
 INSERT INTO `smtp_settings` (`id`, `smtp_host`, `smtp_port`, `smtp_username`, `smtp_password`, `encryption`, `sender_name`, `sender_email`, `admin_email`, `is_active`, `updated_at`) VALUES
-(1, 'smtp.hostinger.com', 465, 'contact@khushindersingh.org', 'ChangeMeOnHostinger123!', 'SSL', 'Sardar Khushinder Singh Jand Sahib Office', 'contact@khushindersingh.org', 'contact@khushindersingh.org', 1, '2026-11-13 04:19:31');
+(1, 'smtp.hostinger.com', 465, 'contact@khusi.1313softdev.com', 'Kuku@5769', 'SSL', 'Sardar Khushinder Singh Jand Sahib Office', 'contact@khusi.1313softdev.com', 'kukukaramjit@gmail.com', 1, '2026-11-13 04:19:31');
 
 -- Email Templates
 INSERT INTO `email_templates` (`id`, `name`, `subject`, `body_html`, `body_text`, `is_active`, `updated_at`) VALUES
