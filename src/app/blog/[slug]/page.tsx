@@ -8,6 +8,8 @@ import AiAssistantWidget from '@/components/public/AiAssistantWidget';
 import { prisma } from '@/lib/prisma';
 import BlogPostClient from './BlogPostClient';
 
+export const dynamic = 'force-dynamic';
+
 interface BlogPostPageProps {
   params: {
     slug: string;
@@ -15,11 +17,16 @@ interface BlogPostPageProps {
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
-  const blog = await prisma.blog.findUnique({
-    where: { slug: params.slug },
-  });
+  let blog = null;
+  try {
+    blog = await prisma.blog.findUnique({
+      where: { slug: params.slug },
+    });
+  } catch (e) {
+    // Database fallback
+  }
 
-  if (!blog) return { title: 'Article Not Found' };
+  if (!blog) return { title: 'Article Not Found | Sardar Khushinder Singh Jand Sahib' };
 
   return {
     title: blog.metaTitle || blog.titleEn,
@@ -41,42 +48,59 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
-  const [settings, blog, advertisements, socialAccounts] = await Promise.all([
-    prisma.websiteSetting.findFirst(),
-    prisma.blog.findUnique({
-      where: { slug: params.slug },
-      include: {
-        category: true,
-        tags: { include: { tag: true } },
-      },
-    }),
-    prisma.advertisement.findMany({ where: { isActive: true } }),
-    prisma.socialAccount.findMany({ where: { isActive: true } }),
-  ]);
+  let settings = null;
+  let blog: any = null;
+  let advertisements: any[] = [];
+  let socialAccounts: any[] = [];
+  let relatedBlogs: any[] = [];
+
+  try {
+    const results = await Promise.all([
+      prisma.websiteSetting.findFirst(),
+      prisma.blog.findUnique({
+        where: { slug: params.slug },
+        include: {
+          category: true,
+          tags: { include: { tag: true } },
+        },
+      }),
+      prisma.advertisement.findMany({ where: { isActive: true } }),
+      prisma.socialAccount.findMany({ where: { isActive: true } }),
+    ]);
+
+    settings = results[0];
+    blog = results[1];
+    advertisements = results[2];
+    socialAccounts = results[3];
+
+    if (blog) {
+      // Increment views
+      await prisma.blog.update({
+        where: { id: blog.id },
+        data: { viewsCount: { increment: 1 } },
+      }).catch(() => null);
+
+      // Fetch related articles in same category
+      relatedBlogs = await prisma.blog.findMany({
+        where: {
+          categoryId: blog.categoryId,
+          id: { not: blog.id },
+          status: 'published',
+        },
+        take: 3,
+        include: { category: true },
+      });
+    }
+  } catch (e) {
+    // Database fallback
+  }
 
   if (!blog) notFound();
 
-  // Increment views
-  await prisma.blog.update({
-    where: { id: blog.id },
-    data: { viewsCount: { increment: 1 } },
-  });
-
-  // Fetch related articles in same category
-  const relatedBlogs = await prisma.blog.findMany({
-    where: {
-      categoryId: blog.categoryId,
-      id: { not: blog.id },
-      status: 'published',
-    },
-    take: 3,
-    include: { category: true },
-  });
-
   const formattedBlog = {
     ...blog,
-    publishedAt: blog.publishedAt.toISOString(),
-    tags: blog.tags.map((t) => ({ nameEn: t.tag.nameEn, namePa: t.tag.namePa, slug: t.tag.slug })),
+    publishedAt: blog.publishedAt ? blog.publishedAt.toISOString() : new Date().toISOString(),
+    tags: (blog.tags || []).map((t: any) => ({ nameEn: t.tag?.nameEn || '', namePa: t.tag?.namePa || '', slug: t.tag?.slug || '' })),
   };
 
   const formattedRelated = relatedBlogs.map((r) => ({

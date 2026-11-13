@@ -31,6 +31,8 @@ const nextConfig = {
     return config;
   },
   experimental: {
+    cpus: 1,
+    workerThreads: false,
     serverComponentsExternalPackages: ['bcryptjs', 'mysql2'],
   },
 };

@@ -5,7 +5,7 @@ import AiAssistantWidget from '@/components/public/AiAssistantWidget';
 import { prisma } from '@/lib/prisma';
 import ContactClientView from './ContactClientView';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export default async function ContactPage() {
   let settings = null;

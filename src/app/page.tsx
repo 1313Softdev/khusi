@@ -12,7 +12,7 @@ import AdBanner from '@/components/public/AdBanner';
 import AiAssistantWidget from '@/components/public/AiAssistantWidget';
 import { prisma } from '@/lib/prisma';
 
-export const revalidate = 60; // Revalidate every 60 seconds
+export const dynamic = 'force-dynamic';
 
 export default async function HomePage() {
   // Fetch dynamic content from MySQL with safe fallback for build-time

@@ -16,37 +16,51 @@ import {
   UserCheck,
 } from 'lucide-react';
 
-export const revalidate = 0; // Fresh metrics
+export const dynamic = 'force-dynamic';
 
 export default async function AdminDashboardPage() {
-  const [
-    totalBlogs,
-    publishedBlogs,
-    draftBlogs,
-    totalInquiries,
-    unreadInquiries,
-    mediaCount,
-    recentInquiries,
-    socialAccounts,
-    activityLogs,
-  ] = await Promise.all([
-    prisma.blog.count(),
-    prisma.blog.count({ where: { status: 'published' } }),
-    prisma.blog.count({ where: { status: 'draft' } }),
-    prisma.contactInquiry.count(),
-    prisma.contactInquiry.count({ where: { isRead: false } }),
-    prisma.mediaLibrary.count(),
-    prisma.contactInquiry.findMany({
-      orderBy: { createdAt: 'desc' },
-      take: 5,
-    }),
-    prisma.socialAccount.findMany({ where: { isActive: true } }),
-    prisma.activityLog.findMany({
-      orderBy: { createdAt: 'desc' },
-      take: 6,
-      include: { user: true },
-    }),
-  ]);
+  let totalBlogs = 0;
+  let publishedBlogs = 0;
+  let draftBlogs = 0;
+  let totalInquiries = 0;
+  let unreadInquiries = 0;
+  let mediaCount = 0;
+  let recentInquiries: any[] = [];
+  let socialAccounts: any[] = [];
+  let activityLogs: any[] = [];
+
+  try {
+    const results = await Promise.all([
+      prisma.blog.count(),
+      prisma.blog.count({ where: { status: 'published' } }),
+      prisma.blog.count({ where: { status: 'draft' } }),
+      prisma.contactInquiry.count(),
+      prisma.contactInquiry.count({ where: { isRead: false } }),
+      prisma.mediaLibrary.count(),
+      prisma.contactInquiry.findMany({
+        orderBy: { createdAt: 'desc' },
+        take: 5,
+      }),
+      prisma.socialAccount.findMany({ where: { isActive: true } }),
+      prisma.activityLog.findMany({
+        orderBy: { createdAt: 'desc' },
+        take: 6,
+        include: { user: true },
+      }),
+    ]);
+
+    totalBlogs = results[0];
+    publishedBlogs = results[1];
+    draftBlogs = results[2];
+    totalInquiries = results[3];
+    unreadInquiries = results[4];
+    mediaCount = results[5];
+    recentInquiries = results[6];
+    socialAccounts = results[7];
+    activityLogs = results[8];
+  } catch (e) {
+    // Database fallback for build time
+  }
 
   return (
     <AdminLayout>

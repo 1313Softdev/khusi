@@ -6,7 +6,7 @@ import AiAssistantWidget from '@/components/public/AiAssistantWidget';
 import { prisma } from '@/lib/prisma';
 import BlogListClient from './BlogListClient';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export default async function BlogListingPage() {
   let settings = null;

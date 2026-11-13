@@ -3,6 +3,8 @@ import './globals.css';
 import { LanguageProvider } from '@/context/LanguageContext';
 import { prisma } from '@/lib/prisma';
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata(): Promise<Metadata> {
   let seo = null;
   let settings = null;

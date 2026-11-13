@@ -7,7 +7,7 @@ import AiAssistantWidget from '@/components/public/AiAssistantWidget';
 import { prisma } from '@/lib/prisma';
 import AboutClientView from './AboutClientView';
 
-export const revalidate = 60;
+export const dynamic = 'force-dynamic';
 
 export default async function AboutPage() {
   let settings = null;
