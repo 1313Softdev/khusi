@@ -17,7 +17,13 @@ export async function hashPassword(password: string): Promise<string> {
 }
 
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
-  return await bcrypt.compare(password, hash);
+  try {
+    if (!password || !hash) return false;
+    return await bcrypt.compare(password, hash);
+  } catch (err) {
+    console.error('Bcrypt comparison error:', err);
+    return false;
+  }
 }
 
 export function signToken(payload: AdminPayload, expiresIn: string = '7d'): string {
