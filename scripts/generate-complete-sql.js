@@ -196,22 +196,22 @@ SET time_zone = "+00:00";
 
   // 16. SMTP Settings
   sql += `-- SMTP Settings\n`;
-  sql += `INSERT INTO \`smtp_settings\` (\`id\`, \`smtp_host\`, \`smtp_port\`, \`smtp_username\`, \`smtp_password\`, \`encryption\`, \`sender_name\`, \`sender_email\`, \`admin_email\`, \`is_active\`, \`updated_at\`) VALUES\n`;
+  sql += `INSERT INTO \`smtp_settings\` (\`id\`, \`smtp_host\`, \`smtp_port\`, \`smtp_username\`, \`smtp_password\`, \`encryption\`, \`sender_name\`, \`sender_email\`, \`admin_notification_email\`, \`is_enabled\`, \`updated_at\`) VALUES\n`;
   sql += `(1, 'smtp.hostinger.com', 465, 'contact@khusi.1313softdev.com', 'Kuku@5769', 'SSL', 'Sardar Khushinder Singh Jand Sahib Office', 'contact@khusi.1313softdev.com', 'kukukaramjit@gmail.com', 1, '${now}');\n\n`;
 
   // 17. Email Templates
   sql += `-- Email Templates\n`;
-  sql += `INSERT INTO \`email_templates\` (\`id\`, \`name\`, \`subject\`, \`body_html\`, \`body_text\`, \`is_active\`, \`updated_at\`) VALUES\n`;
-  sql += `(1, 'inquiry_confirmation', 'Thank you for reaching out to Sardar Khushinder Singh Jand Sahib', '<h2>Sat Sri Akal {{name}},</h2><p>Thank you for contacting the public office of <strong>Sardar Khushinder Singh Jand Sahib</strong>. We have received your message regarding: <em>{{subject}}</em>.</p><p>Our team will review your inquiry and follow up shortly.</p><br><p>Warm regards,<br>Office of Sardar Khushinder Singh Jand Sahib<br>Village Jand Sahib, Punjab</p>', 'Sat Sri Akal {{name}},\\n\\nThank you for contacting the office of Sardar Khushinder Singh Jand Sahib. We have received your inquiry regarding {{subject}}.\\n\\nWarm regards,\\nOffice of Sardar Khushinder Singh Jand Sahib', 1, '${now}'),\n`;
-  sql += `(2, 'admin_notification', 'New Public Inquiry from {{name}}', '<h3>New Public Inquiry Received</h3><p><strong>Name:</strong> {{name}}</p><p><strong>Email:</strong> {{email}}</p><p><strong>Phone:</strong> {{phone}}</p><p><strong>Subject:</strong> {{subject}}</p><p><strong>Message:</strong><br>{{message}}</p>', 'New inquiry from {{name}} ({{email}}, {{phone}}): {{subject}}\\n\\n{{message}}', 1, '${now}');\n\n`;
+  sql += `INSERT INTO \`email_templates\` (\`id\`, \`template_key\`, \`title\`, \`subject\`, \`body_html\`, \`body_text\`, \`variables\`, \`is_active\`, \`updated_at\`) VALUES\n`;
+  sql += `(1, 'inquiry_confirmation', 'Inquiry Confirmation', 'Thank you for reaching out to Sardar Khushinder Singh Jand Sahib', '<h2>Sat Sri Akal {{name}},</h2><p>Thank you for contacting the public office of <strong>Sardar Khushinder Singh Jand Sahib</strong>. We have received your message regarding: <em>{{subject}}</em>.</p><p>Our team will review your inquiry and follow up shortly.</p><br><p>Warm regards,<br>Office of Sardar Khushinder Singh Jand Sahib<br>Village Jand Sahib, Punjab</p>', 'Sat Sri Akal {{name}},\\n\\nThank you for contacting the office of Sardar Khushinder Singh Jand Sahib. We have received your inquiry regarding {{subject}}.\\n\\nWarm regards,\\nOffice of Sardar Khushinder Singh Jand Sahib', 'name,subject', 1, '${now}'),\n`;
+  sql += `(2, 'admin_notification', 'Admin Notification', 'New Public Inquiry from {{name}}', '<h3>New Public Inquiry Received</h3><p><strong>Name:</strong> {{name}}</p><p><strong>Email:</strong> {{email}}</p><p><strong>Phone:</strong> {{phone}}</p><p><strong>Subject:</strong> {{subject}}</p><p><strong>Message:</strong><br>{{message}}</p>', 'New inquiry from {{name}} ({{email}}, {{phone}}): {{subject}}\\n\\n{{message}}', 'name,email,phone,subject,message', 1, '${now}');\n\n`;
 
   // 18. AI Assistant Settings & Knowledge
   sql += `-- AI Assistant Settings\n`;
-  sql += `INSERT INTO \`ai_settings\` (\`id\`, \`is_enabled\`, \`model_name\`, \`temperature\`, \`max_tokens\`, \`system_prompt\`, \`punjabi_system_prompt\`, \`updated_at\`) VALUES\n`;
-  sql += `(1, 1, 'gemini-1.5-flash', 0.2, 800, 'You are the verified bilingual AI Assistant for Sardar Khushinder Singh Jand Sahib (Social Worker & Member of Punjab Sanjhivalta Dal). Only state facts present in the verified portal database.', 'ਤੁਸੀਂ ਸਰਦਾਰ ਖੁਸ਼ਇੰਦਰ ਸਿੰਘ ਜੰਡ ਸਾਹਿਬ (ਸਮਾਜ ਸੇਵੀ ਅਤੇ ਮੈਂਬਰ, ਪੰਜਾਬ ਸਾਂਝੀਵਾਲਤਾ ਦਲ) ਦੇ ਅਧਿਕਾਰਤ ਦੋ-ਭਾਸ਼ੀ ਏਆਈ ਸਹਾਇਕ ਹੋ।', '${now}');\n\n`;
+  sql += `INSERT INTO \`ai_settings\` (\`id\`, \`is_enabled\`, \`provider\`, \`model_name\`, \`system_prompt\`, \`temperature\`, \`max_tokens\`, \`updated_at\`) VALUES\n`;
+  sql += `(1, 1, 'gemini', 'gemini-1.5-flash', 'You are the verified bilingual AI Assistant for Sardar Khushinder Singh Jand Sahib (Social Worker & Member of Punjab Sanjhivalta Dal). Only state facts present in the verified portal database.', 0.2, 800, '${now}');\n\n`;
 
   sql += `-- AI Knowledge Sources\n`;
-  sql += `INSERT INTO \`ai_knowledge_sources\` (\`id\`, \`title\`, \`source_type\`, \`content\`, \`is_active\`, \`created_at\`, \`updated_at\`) VALUES\n`;
+  sql += `INSERT INTO \`ai_knowledge_sources\` (\`id\`, \`title\`, \`category\`, \`content\`, \`is_active\`, \`created_at\`, \`updated_at\`) VALUES\n`;
   sql += `(1, 'Verified Identity & Biography', 'biography', 'Sardar Khushinder Singh Jand Sahib is an esteemed social worker and dedicated member of Punjab Sanjhivalta Dal from village Jand Sahib, Punjab, India. He works on canal water access, free health camps, rural sports, and anti-pollution advocacy.', 1, '${now}', '${now}'),\n`;
   sql += `(2, 'Office Location & Sabha Timings', 'faq', 'Office Address: Village Jand Sahib, Punjab 152026, India. Public grievance hearings and meetings are held every Sunday between 10:00 AM and 2:00 PM.', 1, '${now}', '${now}');\n\n`;
 
