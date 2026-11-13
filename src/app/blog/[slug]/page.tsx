@@ -11,16 +11,17 @@ import BlogPostClient from './BlogPostClient';
 export const dynamic = 'force-dynamic';
 
 interface BlogPostPageProps {
-  params: {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: BlogPostPageProps): Promise<Metadata> {
+  const { slug } = await params;
   let blog = null;
   try {
     blog = await prisma.blog.findUnique({
-      where: { slug: params.slug },
+      where: { slug },
     });
   } catch (e) {
     // Database fallback
@@ -48,6 +49,7 @@ export async function generateMetadata({ params }: BlogPostPageProps): Promise<M
 }
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
+  const { slug } = await params;
   let settings = null;
   let blog: any = null;
   let advertisements: any[] = [];
@@ -58,7 +60,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     const results = await Promise.all([
       prisma.websiteSetting.findFirst(),
       prisma.blog.findUnique({
-        where: { slug: params.slug },
+        where: { slug },
         include: {
           category: true,
           tags: { include: { tag: true } },

@@ -53,10 +53,10 @@ const nextConfig = {
     };
     return config;
   },
+  serverExternalPackages: ['bcryptjs', 'mysql2'],
   experimental: {
     cpus: 1,
     workerThreads: false,
-    serverComponentsExternalPackages: ['bcryptjs', 'mysql2'],
   },
 };
 
