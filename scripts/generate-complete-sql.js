@@ -48,8 +48,9 @@ SET time_zone = "+00:00";
 
 `;
 
-  // Append DDL from Prisma
-  sql += ddl;
+  // Append DDL from Prisma with safe DROP TABLE IF EXISTS
+  const safeDdl = ddl.replace(/CREATE TABLE `([^`]+)`/g, 'DROP TABLE IF EXISTS `$1`;\nCREATE TABLE `$1`');
+  sql += safeDdl;
   sql += `\n\n-- ---------------------------------------------------------------------\n-- SEED DATA & VERIFIED INITIAL RECORDS\n-- ---------------------------------------------------------------------\n\n`;
 
   // 1. Roles
@@ -66,7 +67,7 @@ SET time_zone = "+00:00";
   // 3. Website Settings
   sql += `-- Website Settings\n`;
   sql += `INSERT INTO \`website_settings\` (\`id\`, \`site_name\`, \`site_title\`, \`site_description\`, \`favicon_url\`, \`main_logo_url\`, \`footer_logo_url\`, \`contact_email\`, \`contact_phone\`, \`contact_address\`, \`whatsapp_number\`, \`primary_color\`, \`secondary_color\`, \`accent_color\`, \`default_language\`, \`allow_language_toggle\`, \`punjabi_first\`, \`copyright_text\`, \`created_at\`, \`updated_at\`) VALUES\n`;
-  sql += `(1, 'Sardar Khushinder Singh Jand Sahib', 'Official Portal | Social Worker & Member of Punjab Sanjhivalta Dal', 'Dedicated to community welfare, rural empowerment, education, youth development, and social harmony across Punjab.', '/images/logo-emblem.png', '/images/logo-main.png', '/images/logo-footer.png', 'contact@khushindersingh.org', '+91 98765 43210', 'Village Jand Sahib, District Sri Muktsar Sahib / Bathinda Belt, Punjab 152026, India', '+919876543210', '#0B192C', '#1B2A4A', '#F59E0B', 'en', 1, 0, '© 2026 Sardar Khushinder Singh Jand Sahib. Member, Punjab Sanjhivalta Dal. All Rights Reserved.', '${now}', '${now}');\n\n`;
+  sql += `(1, 'Sardar Khushinder Singh Jand Sahib', 'Official Portal | Social Worker & Member of Punjab Sanjhivalta Dal', 'Dedicated to community welfare, rural empowerment, education, youth development, and social harmony across Punjab.', '/images/logo-emblem.png', '/images/logo-main.png', '/images/logo-footer.png', 'contact@khusi.1313softdev.com', '+91 98765 43210', 'Village Jand Sahib, District Sri Muktsar Sahib / Bathinda Belt, Punjab 152026, India', '+919876543210', '#0B192C', '#1B2A4A', '#F59E0B', 'en', 1, 0, '© 2026 Sardar Khushinder Singh Jand Sahib. Member, Punjab Sanjhivalta Dal. All Rights Reserved.', '${now}', '${now}');\n\n`;
 
   // 4. Biography
   sql += `-- Biography\n`;
@@ -196,7 +197,7 @@ SET time_zone = "+00:00";
   // 16. SMTP Settings
   sql += `-- SMTP Settings\n`;
   sql += `INSERT INTO \`smtp_settings\` (\`id\`, \`smtp_host\`, \`smtp_port\`, \`smtp_username\`, \`smtp_password\`, \`encryption\`, \`sender_name\`, \`sender_email\`, \`admin_email\`, \`is_active\`, \`updated_at\`) VALUES\n`;
-  sql += `(1, 'smtp.hostinger.com', 465, 'contact@khushindersingh.org', 'ChangeMeOnHostinger123!', 'SSL', 'Sardar Khushinder Singh Jand Sahib Office', 'contact@khushindersingh.org', 'contact@khushindersingh.org', 1, '${now}');\n\n`;
+  sql += `(1, 'smtp.hostinger.com', 465, 'contact@khusi.1313softdev.com', 'Kuku@5769', 'SSL', 'Sardar Khushinder Singh Jand Sahib Office', 'contact@khusi.1313softdev.com', 'kukukaramjit@gmail.com', 1, '${now}');\n\n`;
 
   // 17. Email Templates
   sql += `-- Email Templates\n`;
