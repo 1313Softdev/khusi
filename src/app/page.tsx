@@ -15,39 +15,55 @@ import { prisma } from '@/lib/prisma';
 export const revalidate = 60; // Revalidate every 60 seconds
 
 export default async function HomePage() {
-  // Fetch dynamic content from MySQL
-  const [
-    settings,
-    sections,
-    heroSlides,
-    logoSlides,
-    biography,
-    cachedSocialPosts,
-    blogs,
-    galleryImages,
-    advertisements,
-    socialAccounts,
-  ] = await Promise.all([
-    prisma.websiteSetting.findFirst(),
-    prisma.homepageSection.findMany({ orderBy: { displayOrder: 'asc' } }),
-    prisma.heroSlide.findMany({ where: { isActive: true }, orderBy: { displayOrder: 'asc' } }),
-    prisma.logoSlide.findMany({ where: { isActive: true }, orderBy: { displayOrder: 'asc' } }),
-    prisma.biography.findFirst(),
-    prisma.socialPostCache.findMany({ orderBy: { timestamp: 'desc' }, take: 8 }),
-    prisma.blog.findMany({
-      where: { status: 'published' },
-      orderBy: { publishedAt: 'desc' },
-      take: 6,
-      include: { category: true },
-    }),
-    prisma.galleryImage.findMany({
-      orderBy: { displayOrder: 'asc' },
-      take: 12,
-      include: { gallery: true },
-    }),
-    prisma.advertisement.findMany({ where: { isActive: true } }),
-    prisma.socialAccount.findMany({ where: { isActive: true } }),
-  ]);
+  // Fetch dynamic content from MySQL with safe fallback for build-time
+  let settings = null;
+  let sections: any[] = [];
+  let heroSlides: any[] = [];
+  let logoSlides: any[] = [];
+  let biography = null;
+  let cachedSocialPosts: any[] = [];
+  let blogs: any[] = [];
+  let galleryImages: any[] = [];
+  let advertisements: any[] = [];
+  let socialAccounts: any[] = [];
+
+  try {
+    const results = await Promise.all([
+      prisma.websiteSetting.findFirst(),
+      prisma.homepageSection.findMany({ orderBy: { displayOrder: 'asc' } }),
+      prisma.heroSlide.findMany({ where: { isActive: true }, orderBy: { displayOrder: 'asc' } }),
+      prisma.logoSlide.findMany({ where: { isActive: true }, orderBy: { displayOrder: 'asc' } }),
+      prisma.biography.findFirst(),
+      prisma.socialPostCache.findMany({ orderBy: { timestamp: 'desc' }, take: 8 }),
+      prisma.blog.findMany({
+        where: { status: 'published' },
+        orderBy: { publishedAt: 'desc' },
+        take: 6,
+        include: { category: true },
+      }),
+      prisma.galleryImage.findMany({
+        orderBy: { displayOrder: 'asc' },
+        take: 12,
+        include: { gallery: true },
+      }),
+      prisma.advertisement.findMany({ where: { isActive: true } }),
+      prisma.socialAccount.findMany({ where: { isActive: true } }),
+    ]);
+    [
+      settings,
+      sections,
+      heroSlides,
+      logoSlides,
+      biography,
+      cachedSocialPosts,
+      blogs,
+      galleryImages,
+      advertisements,
+      socialAccounts,
+    ] = results;
+  } catch (e) {
+    // Database might not be connected during static build
+  }
 
   // Format gallery items with categories
   const formattedGallery = galleryImages.map((g) => ({

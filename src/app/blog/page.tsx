@@ -9,20 +9,31 @@ import BlogListClient from './BlogListClient';
 export const revalidate = 60;
 
 export default async function BlogListingPage() {
-  const [settings, categories, blogs, advertisements, socialAccounts] = await Promise.all([
-    prisma.websiteSetting.findFirst(),
-    prisma.blogCategory.findMany({ where: { isActive: true } }),
-    prisma.blog.findMany({
-      where: { status: 'published' },
-      orderBy: { publishedAt: 'desc' },
-      include: {
-        category: true,
-        tags: { include: { tag: true } },
-      },
-    }),
-    prisma.advertisement.findMany({ where: { isActive: true } }),
-    prisma.socialAccount.findMany({ where: { isActive: true } }),
-  ]);
+  let settings = null;
+  let categories: any[] = [];
+  let blogs: any[] = [];
+  let advertisements: any[] = [];
+  let socialAccounts: any[] = [];
+
+  try {
+    const results = await Promise.all([
+      prisma.websiteSetting.findFirst(),
+      prisma.blogCategory.findMany({ where: { isActive: true } }),
+      prisma.blog.findMany({
+        where: { status: 'published' },
+        orderBy: { publishedAt: 'desc' },
+        include: {
+          category: true,
+          tags: { include: { tag: true } },
+        },
+      }),
+      prisma.advertisement.findMany({ where: { isActive: true } }),
+      prisma.socialAccount.findMany({ where: { isActive: true } }),
+    ]);
+    [settings, categories, blogs, advertisements, socialAccounts] = results;
+  } catch (e) {
+    // Database might not be connected during static build
+  }
 
   const formattedBlogs = blogs.map((b) => ({
     id: b.id,

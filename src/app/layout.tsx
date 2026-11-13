@@ -4,8 +4,14 @@ import { LanguageProvider } from '@/context/LanguageContext';
 import { prisma } from '@/lib/prisma';
 
 export async function generateMetadata(): Promise<Metadata> {
-  const seo = await prisma.seoSetting.findUnique({ where: { pagePath: '/' } });
-  const settings = await prisma.websiteSetting.findFirst();
+  let seo = null;
+  let settings = null;
+  try {
+    seo = await prisma.seoSetting.findUnique({ where: { pagePath: '/' } });
+    settings = await prisma.websiteSetting.findFirst();
+  } catch (e) {
+    // Database might not be connected during static build
+  }
 
   const title = seo?.metaTitle || settings?.siteTitle || 'Sardar Khushinder Singh Jand Sahib | Official Website';
   const description = seo?.metaDescription || settings?.siteDescription || 'Dedicated to social welfare, rural development, healthcare, and communal harmony across Punjab. Member of Punjab Sanjhivalta Dal.';
@@ -52,7 +58,12 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const settings = await prisma.websiteSetting.findFirst();
+  let settings = null;
+  try {
+    settings = await prisma.websiteSetting.findFirst();
+  } catch (e) {
+    // Database might not be connected during static build
+  }
   const defaultLang = settings?.punjabiFirst ? 'pa' : 'en';
 
   const schemaOrgJSONLD = {

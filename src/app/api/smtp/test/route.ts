@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { NextRequest, NextResponse } from 'next/server';
 import { testSmtp } from '@/lib/mailer';
 import { getAuthenticatedAdmin, logActivity } from '@/lib/auth';

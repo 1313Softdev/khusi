@@ -10,16 +10,26 @@ import AboutClientView from './AboutClientView';
 export const revalidate = 60;
 
 export default async function AboutPage() {
-  const [settings, biography, galleryImages, socialAccounts] = await Promise.all([
-    prisma.websiteSetting.findFirst(),
-    prisma.biography.findFirst(),
-    prisma.galleryImage.findMany({
-      take: 8,
-      orderBy: { displayOrder: 'asc' },
-      include: { gallery: true },
-    }),
-    prisma.socialAccount.findMany({ where: { isActive: true } }),
-  ]);
+  let settings = null;
+  let biography = null;
+  let galleryImages: any[] = [];
+  let socialAccounts: any[] = [];
+
+  try {
+    const results = await Promise.all([
+      prisma.websiteSetting.findFirst(),
+      prisma.biography.findFirst(),
+      prisma.galleryImage.findMany({
+        take: 8,
+        orderBy: { displayOrder: 'asc' },
+        include: { gallery: true },
+      }),
+      prisma.socialAccount.findMany({ where: { isActive: true } }),
+    ]);
+    [settings, biography, galleryImages, socialAccounts] = results;
+  } catch (e) {
+    // Database might not be connected during static build
+  }
 
   const formattedGallery = galleryImages.map((g) => ({
     id: g.id,
