@@ -100,6 +100,30 @@ export default function SocialMediaAdminPage() {
           </button>
         </div>
 
+        {/* 15-Minute Auto-Refresh & Cron Status Card */}
+        <div className="bg-gradient-to-r from-navy-900 to-navy-850 p-5 rounded-2xl border border-saffron-500/30 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+              </span>
+              <span className="text-xs font-bold text-saffron-400 uppercase tracking-wider">
+                Automated 15-Minute Live Sync Active
+              </span>
+            </div>
+            <p className="text-xs text-gray-300">
+              The public portal automatically re-queries Facebook & Instagram every 15 minutes and updates images silently without reloading.
+            </p>
+            <p className="text-[11px] text-gray-400 font-mono">
+              Optional Hostinger Cron Job: <code className="bg-navy-950 px-2 py-0.5 rounded text-saffron-300">curl -s https://khusi.1313softdev.com/api/cron/sync-social</code>
+            </p>
+          </div>
+          <span className="px-3 py-1.5 rounded-full bg-navy-950 text-emerald-400 border border-emerald-500/30 text-xs font-bold shrink-0">
+            Interval: 15 Mins
+          </span>
+        </div>
+
         {alert && (
           <div
             className={`p-4 rounded-xl text-xs flex items-center gap-2 ${

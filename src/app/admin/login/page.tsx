@@ -74,9 +74,16 @@ export default function AdminLoginPage() {
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10 px-4 sm:px-0">
         <div className="bg-navy-900 py-8 px-6 sm:px-10 rounded-3xl border border-navy-800 shadow-2xl space-y-6">
           {error && (
-            <div className="p-3.5 rounded-xl bg-red-950/80 border border-red-500/40 text-red-200 text-xs flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
-              <span>{error}</span>
+            <div className="p-3.5 rounded-xl bg-red-950/80 border border-red-500/40 text-red-200 text-xs flex flex-col gap-1.5">
+              <div className="flex items-center gap-2">
+                <AlertCircle className="w-4 h-4 shrink-0 text-red-400" />
+                <span className="font-semibold">{error}</span>
+              </div>
+              {error.toLowerCase().includes('database') || error.toLowerCase().includes('prisma') || error.toLowerCase().includes('authentication failed') ? (
+                <p className="text-[11px] text-red-300/80 pl-6">
+                  Tip: Visit <a href="/api/db-check" target="_blank" className="underline font-mono text-saffron-300">/api/db-check</a> to inspect database connection and server credentials.
+                </p>
+              ) : null}
             </div>
           )}
 

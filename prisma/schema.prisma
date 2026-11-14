@@ -296,7 +296,7 @@ model SocialAccount {
   isActive             Boolean   @default(true) @map("is_active")
   isFeedEnabled        Boolean   @default(true) @map("is_feed_enabled")
   lastSyncedAt         DateTime? @map("last_synced_at")
-  syncIntervalMinutes  Int       @default(60) @map("sync_interval_minutes")
+  syncIntervalMinutes  Int       @default(15) @map("sync_interval_minutes")
   status               String    @default("configured") @db.VarChar(50) // active, expired, error, configured
   createdAt            DateTime  @default(now()) @map("created_at")
   updatedAt            DateTime  @updatedAt @map("updated_at")

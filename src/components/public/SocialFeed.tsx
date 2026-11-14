@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useLanguage } from '@/context/LanguageContext';
-import { Heart, MessageCircle, ExternalLink, Calendar, RefreshCw } from 'lucide-react';
+import { Heart, MessageCircle, ExternalLink, Calendar, RefreshCw, Clock } from 'lucide-react';
 
 export interface SocialPost {
   id: number;
@@ -24,6 +24,8 @@ interface SocialFeedProps {
   igProfileUrl?: string;
 }
 
+const FIFTEEN_MINUTES_MS = 15 * 60 * 1000;
+
 export default function SocialFeed({
   posts = [],
   fbPageUrl = 'https://www.facebook.com/khushindersingh.sandhu',
@@ -31,22 +33,66 @@ export default function SocialFeed({
 }: SocialFeedProps) {
   const { t } = useLanguage();
   const [activeTab, setActiveTab] = useState<'all' | 'facebook' | 'instagram'>('all');
+  const [postsList, setPostsList] = useState<SocialPost[]>(posts);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [lastRefreshedAt, setLastRefreshedAt] = useState<Date>(new Date());
+  const [syncFeedback, setSyncFeedback] = useState<string | null>(null);
 
-  const filteredPosts = posts.filter((p) => {
+  // Sync state if initial posts change
+  useEffect(() => {
+    if (posts && posts.length > 0 && postsList.length === 0) {
+      setPostsList(posts);
+    }
+  }, [posts, postsList.length]);
+
+  // Fetch latest posts function
+  const fetchLatestFeeds = useCallback(async (isManual = false) => {
+    if (isManual) setIsRefreshing(true);
+    try {
+      const url = isManual ? '/api/social/feed?forceSync=true' : '/api/social/feed';
+      const res = await fetch(url, { cache: 'no-store' });
+      if (res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data.posts) && data.posts.length > 0) {
+          setPostsList(data.posts);
+          setLastRefreshedAt(new Date());
+          if (isManual) {
+            setSyncFeedback(t('Feeds refreshed successfully!', 'ਸੋਸ਼ਲ ਮੀਡੀਆ ਅਪਡੇਟਸ ਤਾਜ਼ਾ ਹੋ ਗਏ ਹਨ!'));
+            setTimeout(() => setSyncFeedback(null), 3500);
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Failed to refresh social feed:', err);
+    } finally {
+      if (isManual) setIsRefreshing(false);
+    }
+  }, [t]);
+
+  // Automated 15-Minute Background Refresh Timer
+  useEffect(() => {
+    // If no initial posts, fetch immediately
+    if (postsList.length === 0) {
+      fetchLatestFeeds(false);
+    }
+
+    // Set 15-minute recurring interval
+    const intervalTimer = setInterval(() => {
+      fetchLatestFeeds(false);
+    }, FIFTEEN_MINUTES_MS);
+
+    return () => clearInterval(intervalTimer);
+  }, [fetchLatestFeeds, postsList.length]);
+
+  const filteredPosts = postsList.filter((p) => {
     if (activeTab === 'all') return true;
     return p.platform.toLowerCase() === activeTab;
   });
 
-  const handleManualRefresh = async () => {
-    setIsRefreshing(true);
-    try {
-      await fetch('/api/social/sync', { method: 'POST' });
-      window.location.reload();
-    } catch {
-      setIsRefreshing(false);
-    }
-  };
+  const formattedRefreshTime = lastRefreshedAt.toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
 
   return (
     <section className="py-16 bg-navy-950 text-white relative">
@@ -55,8 +101,18 @@ export default function SocialFeed({
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12 border-b border-navy-800/80 pb-6">
           <div>
             <div className="inline-flex items-center gap-2 text-saffron-400 text-xs uppercase tracking-widest font-extrabold mb-2">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              <span className="relative flex h-2.5 w-2.5">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
+                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500" />
+              </span>
               <span>{t('Live Official Feeds', 'ਅਧਿਕਾਰਤ ਸੋਸ਼ਲ ਮੀਡੀਆ ਅਪਡੇਟਸ')}</span>
+              <span className="text-gray-400 font-normal">|</span>
+              <span className="text-gray-400 font-sans text-[11px] normal-case tracking-normal flex items-center gap-1">
+                <Clock className="w-3 h-3 text-saffron-400" />
+                <span>
+                  {t('Auto-refreshes every 15 min', 'ਹਰ 15 ਮਿੰਟ ਵਿੱਚ ਆਪਣੇ ਆਪ ਤਾਜ਼ਾ')} • {t('Updated', 'ਆਖਰੀ ਅਪਡੇਟ')}: {formattedRefreshTime}
+                </span>
+              </span>
             </div>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-white font-serif">
               {t('Facebook & Instagram Updates', 'ਫੇਸਬੁੱਕ ਅਤੇ ਇੰਸਟਾਗ੍ਰਾਮ ਗਤੀਵਿਧੀਆਂ')}
@@ -70,7 +126,13 @@ export default function SocialFeed({
           </div>
 
           {/* Platform Filter Tabs & Refresh Button */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-3 flex-wrap sm:flex-nowrap">
+            {syncFeedback && (
+              <span className="text-xs text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 px-3 py-1 rounded-full animate-fade-in font-medium">
+                {syncFeedback}
+              </span>
+            )}
+
             <div className="flex bg-navy-900 rounded-full p-1 border border-navy-800">
               <button
                 onClick={() => setActiveTab('all')}
@@ -105,10 +167,10 @@ export default function SocialFeed({
             </div>
 
             <button
-              onClick={handleManualRefresh}
+              onClick={() => fetchLatestFeeds(true)}
               disabled={isRefreshing}
-              className="p-2 rounded-full bg-navy-850 hover:bg-navy-800 text-gray-300 border border-navy-700/60 hover:text-saffron-400 transition-all"
-              title="Refresh feeds"
+              className="p-2.5 rounded-full bg-navy-850 hover:bg-navy-800 text-gray-300 border border-navy-700/60 hover:text-saffron-400 transition-all disabled:opacity-50"
+              title={t('Click to refresh latest photos now', 'ਹੁਣੇ ਤਾਜ਼ਾ ਫੋਟੋਆਂ ਰਿਫ੍ਰੈਸ਼ ਕਰੋ')}
             >
               <RefreshCw className={`w-4 h-4 ${isRefreshing ? 'animate-spin text-saffron-400' : ''}`} />
             </button>
@@ -129,7 +191,7 @@ export default function SocialFeed({
               return (
                 <div
                   key={post.id || post.postId}
-                  className="glass-card rounded-2xl overflow-hidden flex flex-col group card-hover-lift shadow-xl"
+                  className="glass-card rounded-2xl overflow-hidden flex flex-col group card-hover-lift shadow-xl border border-navy-800/80 bg-navy-900/60 backdrop-blur-md"
                 >
                   {/* Card Header */}
                   <div className="p-4 flex items-center justify-between border-b border-white/5 bg-navy-950/60">
@@ -143,7 +205,7 @@ export default function SocialFeed({
                       </div>
                       <div className="flex flex-col">
                         <span className="text-xs font-bold text-gray-200 truncate max-w-[150px]">
-                          {post.authorName || 'Sardar Khushinder Singh'}
+                          {post.authorName || (isFb ? 'Sardar Khushinder Singh Jand Sahib' : 'khushinder_singh')}
                         </span>
                         <span className="text-[10px] text-gray-400 flex items-center gap-1 font-sans">
                           <Calendar className="w-2.5 h-2.5 text-saffron-400" />
@@ -157,7 +219,7 @@ export default function SocialFeed({
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-gray-400 hover:text-saffron-400 transition-colors p-1.5 rounded-full hover:bg-white/5"
-                      title="View original post"
+                      title={t('View original post', 'ਅਸਲ ਪੋਸਟ ਦੇਖੋ')}
                     >
                       <ExternalLink className="w-4 h-4" />
                     </a>
@@ -168,9 +230,16 @@ export default function SocialFeed({
                     <div className="relative aspect-video sm:aspect-[16/10] bg-navy-950 overflow-hidden">
                       <img
                         src={post.mediaUrl}
-                        alt="Social post media"
+                        alt={post.caption?.slice(0, 50) || 'Social post media'}
                         className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                         loading="lazy"
+                        onError={(e) => {
+                          // Graceful fallback to verified local image if remote CDN fails
+                          const target = e.currentTarget;
+                          if (!target.src.includes('/images/')) {
+                            target.src = isFb ? '/images/fb-post-1.jpg' : '/images/ig-post-1.jpg';
+                          }
+                        }}
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-navy-950/40 via-transparent to-transparent pointer-events-none" />
                     </div>
@@ -178,7 +247,7 @@ export default function SocialFeed({
 
                   {/* Card Caption */}
                   <div className="p-5 flex-1 flex flex-col justify-between">
-                    <p className="text-xs sm:text-sm text-gray-200 line-clamp-4 leading-relaxed font-normal">
+                    <p className="text-xs sm:text-sm text-gray-200 line-clamp-4 leading-relaxed font-normal whitespace-pre-line">
                       {post.caption || t('Verified public update from Sardar Khushinder Singh Jand Sahib.', 'ਸਰਦਾਰ ਖੁਸ਼ਇੰਦਰ ਸਿੰਘ ਜੰਡ ਸਾਹਿਬ ਵੱਲੋਂ ਤਾਜ਼ਾ ਜਨਤਕ ਅਪਡੇਟ।')}
                     </p>
 
@@ -224,7 +293,7 @@ export default function SocialFeed({
                 href={fbPageUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-5 py-2 rounded-full bg-[#1877F2] text-white font-bold text-xs flex items-center gap-2 shadow"
+                className="px-5 py-2 rounded-full bg-[#1877F2] text-white font-bold text-xs flex items-center gap-2 shadow hover:opacity-90 transition-opacity"
               >
                 Facebook Page
               </a>
@@ -232,7 +301,7 @@ export default function SocialFeed({
                 href={igProfileUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-5 py-2 rounded-full bg-gradient-to-r from-pink-500 to-amber-500 text-white font-bold text-xs flex items-center gap-2 shadow"
+                className="px-5 py-2 rounded-full bg-gradient-to-r from-pink-500 to-amber-500 text-white font-bold text-xs flex items-center gap-2 shadow hover:opacity-90 transition-opacity"
               >
                 Instagram Profile
               </a>

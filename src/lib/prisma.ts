@@ -1,6 +1,6 @@
 import { PrismaClient } from '@prisma/client';
 
-const LIVE_PROD_DB_URL = 'mysql://u796814945_khusi:Kuku%405769@127.0.0.1:3306/u796814945_khusi';
+const LIVE_PROD_DB_URL = 'mysql://u796814945_khusi:Kuku%405769@localhost:3306/u796814945_khusi';
 
 function getEffectiveDatabaseUrl(): string {
   const currentUrl = process.env.DATABASE_URL;

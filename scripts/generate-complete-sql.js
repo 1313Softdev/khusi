@@ -5,9 +5,13 @@ const bcrypt = require('bcryptjs');
 
 async function generateCompleteSql() {
   console.log('Generating full MySQL DDL from Prisma schema...');
+  const nodeBinDir = path.dirname(process.execPath);
   const ddl = execSync(
     'npx prisma migrate diff --from-empty --to-schema-datamodel prisma/schema.prisma --script',
-    { encoding: 'utf8' }
+    {
+      encoding: 'utf8',
+      env: { ...process.env, PATH: `${nodeBinDir}:${process.env.PATH || ''}` },
+    }
   );
 
   const now = new Date().toISOString().slice(0, 19).replace('T', ' ');
@@ -164,8 +168,8 @@ SET time_zone = "+00:00";
   // 12. Social Accounts
   sql += `-- Social Accounts\n`;
   sql += `INSERT INTO \`social_accounts\` (\`id\`, \`platform\`, \`account_name\`, \`profile_url\`, \`page_id\`, \`business_account_id\`, \`access_token\`, \`refresh_token\`, \`token_expires_at\`, \`is_active\`, \`is_feed_enabled\`, \`last_synced_at\`, \`sync_interval_minutes\`, \`status\`, \`created_at\`, \`updated_at\`) VALUES\n`;
-  sql += `(1, 'facebook', 'Sardar Khushinder Singh Jand Sahib', 'https://www.facebook.com/khushindersingh.sandhu', '1029384756', NULL, NULL, NULL, NULL, 1, 1, '${now}', 30, 'active', '${now}', '${now}'),\n`;
-  sql += `(2, 'instagram', 'khushinder_singh', 'https://www.instagram.com/khushinder_singh', NULL, '178414002345678', NULL, NULL, NULL, 1, 1, '${now}', 30, 'active', '${now}', '${now}'),\n`;
+  sql += `(1, 'facebook', 'Sardar Khushinder Singh Jand Sahib', 'https://www.facebook.com/khushindersingh.sandhu', '1029384756', NULL, NULL, NULL, NULL, 1, 1, '${now}', 15, 'active', '${now}', '${now}'),\n`;
+  sql += `(2, 'instagram', 'khushinder_singh', 'https://www.instagram.com/khushinder_singh', NULL, '178414002345678', NULL, NULL, NULL, 1, 1, '${now}', 15, 'active', '${now}', '${now}'),\n`;
   sql += `(3, 'youtube', 'Khushinder Singh Jand Sahib Official', 'https://youtube.com/@KhushinderSinghJandSahib', NULL, NULL, NULL, NULL, NULL, 1, 0, NULL, 60, 'configured', '${now}', '${now}'),\n`;
   sql += `(4, 'twitter', '@KhushinderJand', 'https://x.com/KhushinderJand', NULL, NULL, NULL, NULL, NULL, 1, 0, NULL, 60, 'configured', '${now}', '${now}'),\n`;
   sql += `(5, 'whatsapp', '+91 98765 43210', 'https://wa.me/919876543210?text=Sat%20Sri%20Akal%20Khushinder%20Singh%20Ji', NULL, NULL, NULL, NULL, NULL, 1, 0, NULL, 60, 'configured', '${now}', '${now}');\n\n`;
@@ -176,9 +180,11 @@ SET time_zone = "+00:00";
   sql += `(1, 'facebook', 'fb_env_groundwater_2026', 'Sardar Khushinder Singh Jand Sahib', 'ਪੰਜਾਬ ਦੇ ਪਾਣੀਆਂ ਅਤੇ ਵਾਤਾਵਰਨ ਨੂੰ ਪ੍ਰਦੂਸ਼ਿਤ ਕਰਨ ਵਾਲੀਆਂ ਲਾਲ ਸ਼੍ਰੇਣੀ ਦੀਆਂ ਫੈਕਟਰੀਆਂ ਖ਼ਿਲਾਫ਼ ਸਾਂਝੀ ਮੀਟਿੰਗ। ਅਸੀਂ ਆਪਣੀ ਆਉਣ ਵਾਲੀ ਪੀੜ੍ਹੀ ਦੇ ਸਾਫ਼ ਪਾਣੀ ਅਤੇ ਹਵਾ ਨਾਲ ਕਦੇ ਸਮਝੌਤਾ ਨਹੀਂ ਕਰਾਂਗੇ। ସਾਰੇ ਪਿੰਡ ਵਾਸੀਆਂ ਅਤੇ ਕਿਸਾਨ ਸਾਥੀਆਂ ਦਾ ਧੰਨਵਾਦ।\\n\\nStanding united against environmental pollution and industrial contamination of Punjab\\'s groundwater. Clean water and healthy air are non-negotiable rights for every resident.', '/images/fb-post-1.jpg', 'IMAGE', 'https://www.facebook.com/khushindersingh.sandhu', '${now}', 842, 116, '${now}'),\n`;
   sql += `(2, 'facebook', 'fb_farmers_water_rights_2026', 'Sardar Khushinder Singh Jand Sahib', 'ਟੇਲਾਂ \\'ਤੇ ਨਹਿਰੀ ਪਾਣੀ ਪਹੁੰਚਾਉਣ ਅਤੇ ਮਾਲਵਾ ਖੇਤਰ ਦੇ ਕਿਸਾਨਾਂ ਨੂੰ ਸਿੰਚਾਈ ਸਹੂਲਤਾਂ ਦਿਵਾਉਣ ਲਈ ਪ੍ਰਸ਼ਾਸਨ ਨਾਲ ਗੱਲਬਾਤ। ਕਿਸਾਨੀ ਪੰਜਾਬ ਦੀ ਰੀੜ੍ਹ ਦੀ ਹੱਡੀ ਹੈ, ਇਸਦੀ ਮਜ਼ਬੂਤੀ ਸਾਡਾ ਪਹਿਲਾ ਫ਼ਰਜ਼ ਹੈ।\\n\\nAdvocating for tail-end canal water supply for farmers across the Malwa belt. Sustainable agriculture requires timely water delivery and fair treatment for all farming families.', '/images/fb-post-2.jpg', 'IMAGE', 'https://www.facebook.com/khushindersingh.sandhu', '${now}', 1250, 204, '${now}'),\n`;
   sql += `(3, 'facebook', 'fb_health_camp_jand_sahib', 'Sardar Khushinder Singh Jand Sahib', 'ਜੰਡ ਸਾਹਿਬ ਵਿਖੇ ਲੋੜਵੰਦ ਪਰਿਵਾਰਾਂ ਲਈ ਲਗਾਏ ਗਏ ਮੁਫ਼ਤ ਮੈਡੀਕਲ ਅਤੇ ਅੱਖਾਂ ਦੇ ਚੈੱਕਅੱਪ ਕੈਂਪ ਦੌਰਾਨ ਡਾਕਟਰਾਂ ਦੀ ਟੀਮ ਅਤੇ ਮਰੀਜ਼ਾਂ ਨਾਲ ਗੱਲਬਾਤ ਕਰਦੇ ਹੋਏ। ਸਮਾਜ ਸੇਵਾ ਹੀ ਸਭ ਤੋਂ ਵੱਡਾ ਧਰਮ ਹੈ।\\n\\nFree mega health and eye care camp held at Jand Sahib providing specialist checkups and free medicines to rural families. Genuine service to humanity is the highest calling.', '/images/fb-post-3.jpg', 'IMAGE', 'https://www.facebook.com/khushindersingh.sandhu', '${now}', 690, 88, '${now}'),\n`;
-  sql += `(4, 'instagram', 'ig_sports_youth_cup', 'khushinder_singh', 'ਨੌਜਵਾਨੀ ਨੂੰ ਨਸ਼ਿਆਂ ਤੋਂ ਦੂਰ ਕਰਕੇ ਖੇਡ ਮੈਦਾਨਾਂ ਵੱਲ ਤੋਰਨਾ ਸਾਡਾ ਮੁੱਖ ਟੀਚਾ ਹੈ। ਸ਼ਹੀਦ ਭਗਤ ਸਿੰਘ ਸਾਲਾਨਾ ਖੇਡ ਮੇਲੇ ਦੀ ਝਲਕ। 🏆⚽ #PunjabYouth #JandSahib #Sports #Health #Punjab', '/images/ig-post-1.jpg', 'IMAGE', 'https://www.instagram.com/khushinder_singh', '${now}', 1420, 135, '${now}'),\n`;
-  sql += `(5, 'instagram', 'ig_green_punjab_initiative', 'khushinder_singh', 'ਹਰਿਆਵਲ ਪੰਜਾਬ ਮੁਹਿੰਮ: ਪਿੰਡਾਂ ਵਿੱਚ ਫ਼ਲਦਾਰ ਅਤੇ ਛਾਂਦਾਰ ਬੂਟੇ ਲਗਾਉਂਦੇ ਹੋਏ। ਆਓ ਸਾਰੇ ਰਲ ਕੇ ਧਰਤੀ ਮਾਂ ਨੂੰ ਹਰਿਆ-ਭਰਿਆ ਬਣਾਈਏ। 🌿🌳 #GreenPunjab #Environment #SaveWater #SocialService', '/images/ig-post-2.jpg', 'IMAGE', 'https://www.instagram.com/khushinder_singh', '${now}', 980, 74, '${now}'),\n`;
-  sql += `(6, 'instagram', 'ig_sanjhivalta_dal_unity', 'khushinder_singh', 'ਲੋਕਾਂ ਦੀ ਸੇਵਾ ਅਤੇ ਭਾਈਚਾਰਕ ਸਾਂਝ ਹੀ ਸਾਡੀ ਤਾਕਤ ਹੈ। ਪਿੰਡ ਵਾਸੀਆਂ ਨਾਲ ਖੁੱਲ੍ਹੀ ਵਿਚਾਰ-ਚਰਚਾ। 🙏 #PunjabSanjhivaltaDal #PublicService #KhushinderSingh #JandSahib', '/images/ig-post-3.jpg', 'IMAGE', 'https://www.instagram.com/khushinder_singh', '${now}', 1890, 215, '${now}');\n\n`;
+  sql += `(4, 'facebook', 'fb_environmental_ground_movement', 'Sardar Khushinder Singh Jand Sahib', 'ਧਰਤੀ ਹੇਠਲੇ ਜ਼ਹਿਰੀਲੇ ਪਾਣੀ ਅਤੇ ਉਦਯੋਗਿਕ ਪ੍ਰਦੂਸ਼ਣ ਵਿਰੁੱਧ ਜਨਤਕ ਲਹਿਰ। ਪਿੰਡ-ਪਿੰਡ ਜਾ ਕੇ ਲੋਕਾਂ ਨੂੰ ਜਾਗਰੂਕ ਕਰਨਾ ਅਤੇ ਆਪਣੇ ਹੱਕਾਂ ਲਈ ਆਵਾਜ਼ ਬੁਲੰਦ ਕਰਨਾ ਸਾਡੀ ਵਚਨਬੱਧਤਾ ਹੈ।\\n\\nGrassroots environmental awareness campaign defending our water tables, clean rivers, and fertile soil for future generations.', '/images/khushinder-environmental.jpg', 'IMAGE', 'https://www.facebook.com/khushindersingh.sandhu', '${now}', 955, 142, '${now}'),\n`;
+  sql += `(5, 'instagram', 'ig_sports_youth_cup', 'khushinder_singh', 'ਨੌਜਵਾਨੀ ਨੂੰ ਨਸ਼ਿਆਂ ਤੋਂ ਦੂਰ ਕਰਕੇ ਖੇਡ ਮੈਦਾਨਾਂ ਵੱਲ ਤੋਰਨਾ ਸਾਡਾ ਮੁੱਖ ਟੀਚਾ ਹੈ। ਸ਼ਹੀਦ ਭਗਤ ਸਿੰਘ ਸਾਲਾਨਾ ਖੇਡ ਮੇਲੇ ਦੀ ਝਲਕ। 🏆⚽ #PunjabYouth #JandSahib #Sports #Health #Punjab', '/images/ig-post-1.jpg', 'IMAGE', 'https://www.instagram.com/khushinder_singh', '${now}', 1420, 135, '${now}'),\n`;
+  sql += `(6, 'instagram', 'ig_green_punjab_initiative', 'khushinder_singh', 'ਹਰਿਆਵਲ ਪੰਜਾਬ ਮੁਹਿੰਮ: ਪਿੰਡਾਂ ਵਿੱਚ ਫ਼ਲਦਾਰ ਅਤੇ ਛਾਂਦਾਰ ਬੂਟੇ ਲਗਾਉਂਦੇ ਹੋਏ। ਆਓ ਸਾਰੇ ਰਲ ਕੇ ਧਰਤੀ ਮਾਂ ਨੂੰ ਹਰਿਆ-ਭਰਿਆ ਬਣਾਈਏ। 🌿🌳 #GreenPunjab #Environment #SaveWater #SocialService', '/images/ig-post-2.jpg', 'IMAGE', 'https://www.instagram.com/khushinder_singh', '${now}', 980, 74, '${now}'),\n`;
+  sql += `(7, 'instagram', 'ig_sanjhivalta_dal_unity', 'khushinder_singh', 'ਲੋਕਾਂ ਦੀ ਸੇਵਾ ਅਤੇ ਭਾਈਚਾਰਕ ਸਾਂਝ ਹੀ ਸਾਡੀ ਤਾਕਤ ਹੈ। ਪਿੰਡ ਵਾਸੀਆਂ ਨਾਲ ਖੁੱਲ੍ਹੀ ਵਿਚਾਰ-ਚਰਚਾ। 🙏 #PunjabSanjhivaltaDal #PublicService #KhushinderSingh #JandSahib', '/images/ig-post-3.jpg', 'IMAGE', 'https://www.instagram.com/khushinder_singh', '${now}', 1890, 215, '${now}'),\n`;
+  sql += `(8, 'instagram', 'ig_community_field_service', 'khushinder_singh', 'ਲੋਕ ਸੇਵਾ ਹੀ ਪਰਮ ਧਰਮ ਹੈ। ਪਿੰਡ ਜੰਡ ਸਾਹਿਬ ਅਤੇ ਆਸ-ਪਾਸ ਦੇ ਪਿੰਡਾਂ ਦੇ ਬਜ਼ੁਰਗਾਂ ਅਤੇ ਕਿਸਾਨਾਂ ਨਾਲ ਸਾਂਝੀਆਂ ਵਿਚਾਰਾਂ। ਹਰ ਸਮੱਸਿਆ ਦੇ ਹੱਲ ਲਈ ਹਮੇਸ਼ਾ ਹਾਜ਼ਰ। 🤝❤️ #RuralPunjab #PunjabSanjhivaltaDal #SocialWorker', '/images/khushinder-community.jpg', 'IMAGE', 'https://www.instagram.com/khushinder_singh', '${now}', 1120, 96, '${now}');\n\n`;
 
   // 14. Advertisements
   sql += `-- Advertisements\n`;
